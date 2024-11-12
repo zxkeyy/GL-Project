@@ -1,0 +1,7 @@
+python3 -m venv venv
+source venv/bin/activate
+
+docker run --name my_postgres -v pgdata:/var/lib/postgresql/data -e POSTGRES_USER=myuser -e POSTGRES_PASSWORD=mypassword -e POSTGRES_DB=mydatabase -p 5432:5432 -d postgres
+
+docker stop my_postgres
+docker start my_postgres
