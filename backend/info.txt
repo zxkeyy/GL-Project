@@ -5,3 +5,5 @@ docker run --name my_postgres -v pgdata:/var/lib/postgresql/data -e POSTGRES_USE
 
 docker stop my_postgres
 docker start my_postgres
+
+docker-compose up --build
