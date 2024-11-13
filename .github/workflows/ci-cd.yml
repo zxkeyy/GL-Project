@@ -43,6 +43,14 @@ jobs:
           cd backend/dz_delivery
           pip install --no-cache-dir -r requirements.txt
 
+      - name: Create .env for Django
+        run: |
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> backend/.env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> backend/.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> backend/.env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> backend/.env
+          echo "DB_HOST=${{ secrets.DB_PORT }}" >> backend/.env
+
       - name: Build Backend Docker Image
         run: |
           docker build -t dz_backend ./backend/dz_delivery
