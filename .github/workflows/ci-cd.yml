@@ -1,8 +1,104 @@
-# Trigger the workflow on push or pull_request events
+name: CI/CD Pipeline
+
 on:
   push:
     branches:
-      - main # or any branch you want to trigger on push
+      - main
   pull_request:
     branches:
-      - main # or any branch you want to trigger on PRs
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: myuser
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: dz_delivery
+        ports:
+          - 5432:5432
+        volumes:
+          - pgdata:/var/lib/postgresql/data
+        options: >-
+          --health-cmd="pg_isready -U myuser"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies for backend
+        run: |
+          cd backend/dz_delivery
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t dz_backend ./backend/dz_delivery
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies for frontend
+        run: |
+          cd frontend/dz_delivery
+          npm install
+
+      - name: Build Frontend Docker Image
+        run: |
+          docker build -t dz_frontend ./frontend/dz_delivery
+
+      - name: Run Backend Tests
+        run: |
+          cd backend/dz_delivery
+          python manage.py test
+
+      - name: Run Frontend Tests
+        run: |
+          cd frontend/dz_delivery
+          npm test
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker.io
+
+      - name: Build Backend Docker Image
+        run: |
+          docker build -t dz_backend ./backend/dz_delivery
+
+      - name: Build Frontend Docker Image
+        run: |
+          docker build -t dz_frontend ./frontend/dz_delivery
+
+      - name: Deploy to Production (example with Docker Compose)
+        run: |
+          docker-compose -f docker-compose.yml up -d
+
+      - name: Notify Deployment Success
+        run: echo "Deployment to production was successful!"
+
+volumes:
+  pgdata:
