@@ -1,0 +1,8 @@
+# Trigger the workflow on push or pull_request events
+on:
+  push:
+    branches:
+      - main # or any branch you want to trigger on push
+  pull_request:
+    branches:
+      - main # or any branch you want to trigger on PRs
