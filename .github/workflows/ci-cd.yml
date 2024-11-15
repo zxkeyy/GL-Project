@@ -17,9 +17,9 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_USER: myuser
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: dz_delivery
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.DB_NAME }}
         ports:
           - 5432:5432
         volumes:
@@ -49,9 +49,9 @@ jobs:
 
       - name: Create .env for Django
         run: |
-          echo "DB_NAME=dz_delivery" >> backend/.env
-          echo "DB_USER=myuser" >> backend/.env
-          echo "DB_PASSWORD=password" >> backend/.env
+          echo "DB_NAME=${{ vars.DB_NAME }} " >> backend/.env
+          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> backend/.env
+          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
           echo "DB_HOST=localhost" >> backend/.env
           echo "DB_PORT=5432" >> backend/.env
       - name: Run Migrations
