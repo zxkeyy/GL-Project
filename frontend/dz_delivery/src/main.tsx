@@ -7,7 +7,7 @@ import theme from "./theme";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes.jsx";
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
