@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -44,6 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'djoser',
+    #
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +93,7 @@ DATABASES = {
         'NAME': env('DB_NAME', default='dz_delivery'),
         'USER': env('DB_USER', default='myuser'),
         'PASSWORD': env('DB_PASSWORD', default='password'),
-        'HOST': env('DB_HOST', default='localhost'),
+        'HOST': env('DB_HOST', default='db'),
         'PORT': env('DB_PORT', default='5432'),
     }
 }
@@ -136,10 +143,49 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+DJOSER = {
+    'USER_CREATE_PASSWORD_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'auth/users/reset-username/{uid}/{token}',
+    'SERIALIZERS': {},
+    'EMAIL': {
+        'activation': 'djoser.email.ActivationEmail',
+    },
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=120),  # Token expiration
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=120),
+    'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
+    'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
+}
+
+AUTH_USER_MODEL = 'users.User'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER= env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@yourdomain.com')
+SERVER_EMAIL = env('SERVER_EMAIL', default='admin@yourdomain.com')
