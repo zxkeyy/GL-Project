@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+      - development
 
 jobs:
   build:
@@ -49,11 +50,13 @@ jobs:
 
       - name: Create .env for Django
         run: |
-          echo "DB_NAME=${{ vars.DB_NAME }} " >> backend/.env
-          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> backend/.env
-          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
-          echo "DB_HOST=localhost" >> backend/.env
-          echo "DB_PORT=5432" >> backend/.env
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> backend/dz_delivery/.env
+          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> backend/dz_delivery/.env
+          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/dz_delivery/.env
+          echo "DB_HOST=${{ vars.DB_HOST }}" >> backend/dz_delivery/.env
+          echo "DB_PORT=${{ vars.DB_PORT }}" >> backend/dz_delivery/.env
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> backend/dz_delivery/.env
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> backend/dz_delivery/.env
       - name: Run Migrations
         run: |
           cd backend/dz_delivery
