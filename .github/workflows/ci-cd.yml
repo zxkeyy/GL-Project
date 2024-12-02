@@ -54,6 +54,8 @@ jobs:
           echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
           echo "DB_HOST=localhost" >> backend/.env
           echo "DB_PORT=5432" >> backend/.env
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> backend/.env
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> backend/.env
       - name: Run Migrations
         run: |
           cd backend/dz_delivery
