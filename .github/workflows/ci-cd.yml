@@ -57,6 +57,8 @@ jobs:
           echo "DB_PORT=${{ vars.DB_PORT }}" >> backend/dz_delivery/.env
           echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> backend/dz_delivery/.env
           echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> backend/dz_delivery/.env
+          echo "ALLOWED_HOSTS=${{ vars.ALLOWED_HOSTS }}" >> backend/dz_delivery/.env
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> backend/dz_delivery/.env
       - name: Run Migrations
         run: |
           cd backend/dz_delivery
