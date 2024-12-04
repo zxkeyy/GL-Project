@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'dz_delivery.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='#dz_delivery'),
-        'USER': env('DB_USER', default='#myuser'),
-        'PASSWORD': env('DB_PASSWORD', default='#password'),
-        'HOST': env('DB_HOST', default='#db'),
-        'PORT': env('DB_PORT', default='#5432'),
+        'NAME': env('DB_NAME', default='dz_delivery'),
+        'USER': env('DB_USER', default='myuser'),
+        'PASSWORD': env('DB_PASSWORD', default='password'),
+        'HOST': env('DB_HOST', default='db'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
 
