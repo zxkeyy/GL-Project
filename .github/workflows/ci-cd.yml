@@ -35,9 +35,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug secrets
-        run: echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}, POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} DB_NAME=${{ vars.DB_NAME }}, DB_HOST=${{ vars.DB_HOST }}"
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -82,6 +79,15 @@ jobs:
         run: |
           docker build -t dz_frontend ./frontend/dz_delivery
 
+      - name: Install dependencies for mobile
+        run: |
+          cd mobile/dz_delivery
+          npm install
+
+      - name: Build Mobile Docker Image
+        run: |
+          docker build -t dz_mobile ./mobile/dz_delivery
+
       - name: Run Backend Tests
         run: |
           cd backend/dz_delivery
@@ -90,4 +96,9 @@ jobs:
       - name: Run Frontend Tests
         run: |
           cd frontend/dz_delivery
+          npm test
+
+      - name: Run Mobile Tests
+        run: |
+          cd mobile/dz_delivery
           npm test
