@@ -14,14 +14,6 @@ services:
     depends_on:
       - db
 
-  frontend:
-    build: ./frontend/dz_delivery
-    ports:
-      - "5173:5173"
-    volumes:
-      - ./frontend/dz_delivery:/app # Mount code to container
-      #- /app/node_modules # Mount the container's node modules as a seperate
-
   mobile:
     build: ./mobile/dz_delivery
     ports:

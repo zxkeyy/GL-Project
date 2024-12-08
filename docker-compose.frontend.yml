@@ -22,23 +22,6 @@ services:
       - ./frontend/dz_delivery:/app # Mount code to container
       #- /app/node_modules # Mount the container's node modules as a seperate
 
-  mobile:
-    build: ./mobile/dz_delivery
-    ports:
-      - "19006:19006"
-      - "19001:19001"
-      - "19002:19002"
-      - "8081:8081"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - PYTHONUNBUFFERED=1
-      - REACT_NATIVE_PACKAGER_HOSTNAME=10.5.3.243 # Change this to your local machine's IP address
-    volumes:
-      - ./mobile/dz_delivery/:/opt/my-app:delegated
-      - /opt/my-app/node_modules
-    stdin_open: true
-    tty: true
-
   db:
     image: postgres
     environment:
