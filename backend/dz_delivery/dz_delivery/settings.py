@@ -178,6 +178,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
     'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
     'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
+    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.TokenObtainPairSerializer',
 }
 
 AUTH_USER_MODEL = 'users.User'
