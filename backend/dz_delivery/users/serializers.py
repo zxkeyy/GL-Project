@@ -22,5 +22,6 @@ class TokenObtainPairSerializer(TokenObtainPairSerializer):
         # custom claims
         token['fullname'] = user.full_name
         token['is_active'] = user.is_active
+        token['email'] = user.email
 
         return token
