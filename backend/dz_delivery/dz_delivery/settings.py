@@ -156,8 +156,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'SET_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
