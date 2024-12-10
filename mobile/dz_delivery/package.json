@@ -20,15 +20,28 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/bottom-tabs": "^7.0.0",
+<<<<<<< Updated upstream:mobile/dz_delivery/package.json
     "@react-navigation/native": "^7.0.0",
     "expo": "~52.0.11",
+=======
+    "@react-navigation/native": "^7.0.13",
+    "@react-navigation/native-stack": "^7.1.14",
+    "autoprefixer": "^10.4.20",
+    "expo": "^52.0.15",
+>>>>>>> Stashed changes:mobile/package.json
     "expo-blur": "~14.0.1",
     "expo-constants": "~17.0.3",
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
     "expo-linking": "~7.0.3",
+<<<<<<< Updated upstream:mobile/dz_delivery/package.json
     "expo-router": "~4.0.9",
     "expo-splash-screen": "~0.29.13",
+=======
+    "expo-location": "~18.0.2",
+    "expo-router": "^4.0.11",
+    "expo-splash-screen": "~0.29.12",
+>>>>>>> Stashed changes:mobile/package.json
     "expo-status-bar": "~2.0.0",
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.4",
