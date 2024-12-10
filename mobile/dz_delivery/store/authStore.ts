@@ -1,64 +1,62 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-interface User {
+export interface User {
   id: string;
   fullName: string;
   email: string;
-  is_active: boolean;
+  isActive: boolean;
 }
 
 interface AuthState {
   user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  login: (token: string) => void;
+  accessToken: string | null;
+  refreshToken: string | null;
+  login: (accessToken: string, refreshToken: string, userData: User) => void;
   logout: () => void;
-  fetchUser: () => Promise<void>;
+  setAccessToken: (accessToken: string) => void;
+  setRefreshToken: (refreshToken: string) => void;
 }
 
-const useAuthStore = create<AuthState>((set, get) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
-
-  // Login action: Accepts a JWT token
-  login: (token: string) => {
-    set({ token, isAuthenticated: true });
-    get().fetchUser(); // Fetch user info based on the token
-  },
-
-  logout: () =>
-    set({
+const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      accessToken: null,
+      refreshToken: null,
       user: null,
-      token: null,
-      isAuthenticated: false,
+
+      // Login action: set access token, refresh token, and user data
+      login: (accessToken, refreshToken, userData) =>
+        set(() => ({
+          accessToken,
+          refreshToken,
+          user: userData,
+        })),
+
+      // Logout action: clear all authentication data
+      logout: () =>
+        set(() => ({
+          accessToken: null,
+          refreshToken: null,
+          user: null,
+        })),
+
+      // Set access token separately if needed
+      setAccessToken: (accessToken) => set(() => ({ accessToken })),
+
+      // Set refresh token separately if needed
+      setRefreshToken: (refreshToken) => set(() => ({ refreshToken })),
     }),
-
-  fetchUser: async () => {},
-}));
-
-const fetchUser = async (token: string | null) => {
-  if (!token) return;
-
-  try {
-    // Replace with your API endpoint
-    const response = await fetch("https://your-api.com/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const userData: User = await response.json();
-      set({ user: userData });
-    } else {
-      // Token may have expired or is invalid
-      get().logout();
+    {
+      name: "auth-storage", // unique name
+      storage: createJSONStorage(() => localStorage), // use local storage for persistence
+      partialize: (state) => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+        user: state.user,
+      }), // only persist access token, refresh token, and user
     }
-  } catch (error) {
-    console.error("Failed to fetch user data:", error);
-    get().logout();
-  }
-};
+  )
+);
 
 export default useAuthStore;
