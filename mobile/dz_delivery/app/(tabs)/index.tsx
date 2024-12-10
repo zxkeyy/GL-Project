@@ -5,8 +5,12 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Link, Redirect } from "expo-router";
+import { useStore } from "zustand";
+import useAuthStore from "@/store/authStore";
 
 export default function HomeScreen() {
+  const user = useAuthStore((state) => state.user);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
@@ -17,6 +21,10 @@ export default function HomeScreen() {
         />
       }
     >
+      <ThemedText>
+        Welcome to DZ Delivery!{" "}
+        {user ? `User: ${user.fullName}, ${user.email}` : ""}
+      </ThemedText>
       <ThemedView style={styles.titleContainer}>
         <Link href="/signup">
           <ThemedText type="link">Signup</ThemedText>

@@ -8,16 +8,18 @@ import {
   Alert,
 } from "react-native";
 import { Link } from "expo-router";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const { login } = useAuth();
+
   async function loginWithEmail() {
     setLoading(true);
-    // Here you would typically integrate with your authentication service
-    Alert.alert("Login", `Attempted to login with email: ${email}`);
+    login(email, password);
     setLoading(false);
   }
 

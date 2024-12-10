@@ -28,6 +28,13 @@ export default function AuthLayout() {
             title: "Sign Up",
           }}
         />
+        <Stack.Screen
+          name="login-signup"
+          options={{
+            title: "Log In or Sign Up",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </View>
   );
