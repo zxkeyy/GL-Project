@@ -21,10 +21,8 @@ class AuthenticationTestCase(TestCase):
         # Test user credentials
         self.user_data = {
             'email': 'testuser@example.com',
-            'username': 'testuser',
             'password': 'TestPassword123!',
-            'first_name': 'Test',
-            'last_name': 'User'
+            'full_name': 'Test User',
         }
         
         # Create a test user
@@ -39,11 +37,9 @@ class AuthenticationTestCase(TestCase):
         """
         new_user_data = {
             'email': 'newuser@example.com',
-            'username': 'newuser',
             'password': 'NewPassword456!',
             're_password': 'NewPassword456!',
-            'first_name': 'New',
-            'last_name': 'User'
+            'full_name': 'New User',
         }
         
         response = self.client.post(self.register_url, new_user_data)
@@ -60,7 +56,7 @@ class AuthenticationTestCase(TestCase):
         """
         # Successful login
         login_credentials = {
-            'username': self.user_data['username'],
+            'email': self.user_data['email'],
             'password': self.user_data['password']
         }
         
@@ -77,8 +73,8 @@ class AuthenticationTestCase(TestCase):
         - Verify login fails with non-existent user
         """
         invalid_credentials = [
-            {'username': self.user_data['username'], 'password': 'WrongPassword'},
-            {'username': 'nonexistent', 'password': 'AnyPassword'}
+            {'email': self.user_data['email'], 'password': 'WrongPassword'},
+            {'email': 'nonexistent', 'password': 'AnyPassword'}
         ]
         
         for creds in invalid_credentials:

@@ -28,12 +28,12 @@ environ.Env.read_env(env_file=".env")
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ijyt7+n*6%wy1=lbfy-#zju5m($%ovo1+z_$um6dzip!93bi!p'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = [] # env.list('ALLOWED_HOSTS', default=['localhost'])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
 
 # Application definition
@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'dz_delivery.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME', default='#dz_delivery'),
-        'USER': env('DB_USER', default='#myuser'),
-        'PASSWORD': env('DB_PASSWORD', default='#password'),
-        'HOST': env('DB_HOST', default='#db'),
-        'PORT': env('DB_PORT', default='#5432'),
+        'NAME': env('DB_NAME', default='dz_delivery'),
+        'USER': env('DB_USER', default='myuser'),
+        'PASSWORD': env('DB_PASSWORD', default='password'),
+        'HOST': env('DB_HOST', default='db'),
+        'PORT': env('DB_PORT', default='5432'),
     }
 }
 
@@ -144,7 +144,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -163,7 +162,11 @@ DJOSER = {
     'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'auth/users/reset-username/{uid}/{token}',
-    'SERIALIZERS': {},
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.UserCreateSerializer',
+        'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
+    },
     'EMAIL': {
         'activation': 'djoser.email.ActivationEmail',
     },
@@ -171,8 +174,8 @@ DJOSER = {
 
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=120),  # Token expiration
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=120),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Token expiration
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
     'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
     'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
 }
