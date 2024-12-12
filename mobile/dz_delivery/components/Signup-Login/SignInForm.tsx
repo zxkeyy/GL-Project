@@ -10,6 +10,8 @@ interface SignInFormProps {
     phone: string;
     password: string;
     confirmPassword: string;
+    signInEmail: string;
+    signInPassword: string;
   };
   errors: { [key: string]: string[] };
   onInputChange: (field: string, value: string) => void;
@@ -20,8 +22,6 @@ export function SignInForm({
   errors,
   onInputChange,
 }: SignInFormProps) {
-  const handleLogin = () => {};
-
   return (
     <>
       <Image
@@ -57,18 +57,18 @@ export function SignInForm({
       <View style={{ gap: 12, marginBottom: 24 }}>
         <ValidatedInput
           placeholder="Email"
-          value={formData.email}
-          onChangeText={(value) => onInputChange("email", value)}
+          value={formData.signInEmail}
+          onChangeText={(value) => onInputChange("signInEmail", value)}
           keyboardType="email-address"
           autoCapitalize="none"
-          error={errors.email?.[0]}
+          error={errors.signInEmail?.[0]}
         />
         <ValidatedInput
           placeholder="Password"
-          value={formData.password}
-          onChangeText={(value) => onInputChange("password", value)}
+          value={formData.signInPassword}
+          onChangeText={(value) => onInputChange("signInPassword", value)}
           secureTextEntry
-          error={errors.password?.[0]}
+          error={errors.signInPassword?.[0]}
         />
         <TouchableOpacity style={{ alignSelf: "flex-end" }}>
           <ThemedText style={{ color: "#4CAF50", fontSize: 14 }}>

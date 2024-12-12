@@ -4,9 +4,10 @@ import { ThemedText } from "@/components/ThemedText";
 
 interface AuthButtonProps {
   activeTab: "signin" | "signup";
+  onClick: () => void;
 }
 
-export function AuthButton({ activeTab }: AuthButtonProps) {
+export function AuthButton({ activeTab, onClick }: AuthButtonProps) {
   return (
     <TouchableOpacity
       style={{
@@ -16,6 +17,7 @@ export function AuthButton({ activeTab }: AuthButtonProps) {
         alignItems: "center",
         justifyContent: "center",
       }}
+      onPress={onClick}
     >
       <ThemedText
         style={{

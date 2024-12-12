@@ -68,6 +68,9 @@ export const useAuth = () => {
       return {
         success: false,
         error: error instanceof Error ? error.message : "Login failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
       };
     } finally {
       setLoading(false);

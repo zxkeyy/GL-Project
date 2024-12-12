@@ -18,7 +18,6 @@ export const validatePassword = (password: string): string | null => {
 
 export const validateFullName = (name: string): string | null => {
   if (!name) return "Full name is required";
-  if (name.trim().split(" ").length < 2) return "Please enter full name";
   return null;
 };
 
@@ -35,6 +34,11 @@ export const validateConfirmPassword = (
 ): string | null => {
   if (!confirmPassword) return "Please confirm your password";
   if (password !== confirmPassword) return "Passwords do not match";
+  return null;
+};
+
+export const validateNonEmpty = (value: string): string | null => {
+  if (!value) return "Field is required";
   return null;
 };
 

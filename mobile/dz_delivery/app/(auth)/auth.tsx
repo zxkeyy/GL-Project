@@ -7,8 +7,10 @@ import { SignUpForm } from "@/components/Signup-Login/SignUpForm";
 import { ValidatedInput } from "@/components/Signup-Login/ValidatedInput";
 import { useAuth } from "@/hooks/useAuth";
 import { validateConfirmPassword, validateInput } from "@/utils/validators";
+import { router } from "expo-router";
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
+import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
@@ -19,11 +21,24 @@ export default function AuthScreen() {
     phone: "",
     password: "",
     confirmPassword: "",
+    signInEmail: "",
+    signInPassword: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
 
   const { login } = useAuth();
 
+  const updateErrors = (errorField: string, errorMessage: string | null) => {
+    setErrors((prev) => {
+      const newErrors = { ...prev };
+      if (errorMessage) {
+        newErrors[errorField] = [errorMessage];
+      } else {
+        delete newErrors[errorField];
+      }
+      return newErrors;
+    });
+  };
   const handleInputChange = (field: string, value: string) => {
     // Update form data
     setFormData((prev) => ({
@@ -31,24 +46,15 @@ export default function AuthScreen() {
       [field]: value,
     }));
 
-    const updateErrors = (errorField: string, errorMessage: string | null) => {
-      setErrors((prev) => {
-        const newErrors = { ...prev };
-        if (errorMessage) {
-          newErrors[errorField] = [errorMessage];
-        } else {
-          delete newErrors[errorField];
-        }
-        return newErrors;
-      });
-    };
-
     // Validate the current field
     const error = validateInput(field, value);
     updateErrors(field, error);
 
     // Validate confirmPassword only when necessary
-    if (field === "password" || field === "confirmPassword") {
+    if (
+      (field === "password" && formData.confirmPassword != "") ||
+      field === "confirmPassword"
+    ) {
       const confirmPasswordError = validateConfirmPassword(
         field === "password" ? value : formData.password,
         field === "confirmPassword" ? value : formData.confirmPassword
@@ -59,7 +65,21 @@ export default function AuthScreen() {
 
   async function handleLogin() {
     setLoading(true);
-    login(formData.email, formData.password);
+    const response = await login(formData.signInEmail, formData.signInPassword);
+    if (!response.success) {
+      alert(
+        "Login failed: " + JSON.stringify(response.data ? response.data : "")
+      );
+      if (response.data.email) {
+        updateErrors("signInEmail", response.data.email);
+      }
+      if (response.data.password) {
+        updateErrors("signInPassword", response.data.password);
+      }
+    } else {
+      alert("Login successful");
+      router.replace("/");
+    }
     setLoading(false);
   }
 
@@ -90,7 +110,7 @@ export default function AuthScreen() {
         )}
 
         <View style={{ marginTop: "auto" }}>
-          <AuthButton activeTab={activeTab} />
+          <AuthButton activeTab={activeTab} onClick={handleLogin} />
           <AuthSwitchText activeTab={activeTab} onTabChange={setActiveTab} />
         </View>
       </ScrollView>

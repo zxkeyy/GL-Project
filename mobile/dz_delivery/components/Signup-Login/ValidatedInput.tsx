@@ -29,12 +29,12 @@ export function ValidatedInput({
     <View>
       <TextInput
         style={{
-          height: 60,
+          height: 48,
           borderWidth: error ? 2 : 1,
           borderColor: error ? "red" : "#E0E0E0",
           borderRadius: 12,
           paddingHorizontal: 12,
-          paddingVertical: 26,
+          paddingVertical: 16,
           fontSize: 15,
           fontFamily: "Sora",
         }}
@@ -47,7 +47,9 @@ export function ValidatedInput({
         autoCapitalize={autoCapitalize}
       />
       {error && (
-        <ThemedText style={{ color: "red", fontSize: 12 }}>{error}</ThemedText>
+        <ThemedText style={{ color: "red", fontSize: 12, marginBottom: -8 }}>
+          {error}
+        </ThemedText>
       )}
     </View>
   );
