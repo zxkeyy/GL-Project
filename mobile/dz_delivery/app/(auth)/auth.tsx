@@ -26,7 +26,7 @@ export default function AuthScreen() {
   });
   const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
 
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
 
   const updateErrors = (errorField: string, errorMessage: string | null) => {
     setErrors((prev) => {
@@ -65,6 +65,10 @@ export default function AuthScreen() {
 
   async function handleLogin() {
     setLoading(true);
+    if (errors.signInEmail || errors.signInPassword) {
+      setLoading(false);
+      return;
+    }
     const response = await login(formData.signInEmail, formData.signInPassword);
     if (!response.success) {
       alert(
@@ -81,6 +85,43 @@ export default function AuthScreen() {
       router.replace("/");
     }
     setLoading(false);
+  }
+
+  async function handleSignUp() {
+    setLoading(true);
+    if (formData.password !== formData.confirmPassword) {
+      updateErrors("confirmPassword", "Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (errors.password || errors.email || errors.fullName) {
+      setLoading(false);
+      return;
+    }
+
+    const response = await signup(
+      formData.email,
+      formData.fullName,
+      formData.password
+    );
+    if (!response.success) {
+      alert(
+        "Signup failed: " + JSON.stringify(response.data ? response.data : "")
+      );
+      if (response.data.email) {
+        updateErrors("email", response.data.email);
+      }
+      if (response.data.full_name) {
+        updateErrors("fullName", response.data.full_name);
+      }
+      if (response.data.password) {
+        updateErrors("password", response.data.password);
+      }
+    } else {
+      alert("Signup successful");
+      router.replace("/");
+    }
   }
 
   return (
@@ -110,7 +151,10 @@ export default function AuthScreen() {
         )}
 
         <View style={{ marginTop: "auto" }}>
-          <AuthButton activeTab={activeTab} onClick={handleLogin} />
+          <AuthButton
+            activeTab={activeTab}
+            onClick={activeTab == "signin" ? handleLogin : handleSignUp}
+          />
           <AuthSwitchText activeTab={activeTab} onTabChange={setActiveTab} />
         </View>
       </ScrollView>

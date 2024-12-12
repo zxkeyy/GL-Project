@@ -77,6 +77,59 @@ export const useAuth = () => {
     }
   };
 
+  const createAccount = async (
+    email: string,
+    fullName: string,
+    password: string
+  ) => {
+    setLoading(true);
+    try {
+      // First, create the account
+      const response = await apiClient.post("/auth/users/", {
+        email,
+        full_name: fullName,
+        password,
+      });
+
+      // Then attempt to authenticate
+      try {
+        const authResult = await authenticate(email, password);
+
+        // Check if authentication was successful
+        if (!authResult.success) {
+          console.error(
+            "Authentication failed after account creation:",
+            authResult.error
+          );
+          return {
+            success: false,
+            error: "Authentication failed after account creation",
+          };
+        }
+
+        return { success: true };
+      } catch (authError) {
+        console.error("Authentication error:", authError);
+        return {
+          success: false,
+          error: "Could not authenticate after account creation",
+        };
+      }
+    } catch (error) {
+      console.error("Account creation error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Account creation failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Token refresh mechanism
   const refreshAccessToken = async () => {
     if (!refreshToken) return null;
@@ -110,6 +163,7 @@ export const useAuth = () => {
   return {
     login: authenticate,
     logout,
+    signup: createAccount,
     user,
     accessToken,
     refreshToken,
