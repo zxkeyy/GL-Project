@@ -149,7 +149,7 @@ CORS_ALLOWED_ORIGINS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.JWTInactiveUserAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -158,6 +158,7 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -183,6 +184,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
     'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
     'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.TokenObtainPairSerializer',
+    'USER_AUTHENTICATION_RULE': 'users.authentication.inactive_user_authentication_rule',
 }
 
 AUTH_USER_MODEL = 'users.User'
