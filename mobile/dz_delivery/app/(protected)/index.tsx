@@ -1,15 +1,15 @@
-import { Image, StyleSheet, Platform } from "react-native";
+import { Image, StyleSheet, Platform, TouchableOpacity } from "react-native";
 
-import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Link, Redirect } from "expo-router";
-import { useStore } from "zustand";
+import { Link } from "expo-router";
 import useAuthStore from "@/store/authStore";
+import { useAuth } from "@/hooks/useAuth";
+import { StackActions } from "@react-navigation/native";
 
 export default function HomeScreen() {
-  const user = useAuthStore((state) => state.user);
+  const { user, logout } = useAuth();
 
   return (
     <ParallaxScrollView
@@ -26,13 +26,13 @@ export default function HomeScreen() {
         {user ? `User: ${user.fullName}, ${user.email}` : ""}
       </ThemedText>
       <ThemedView style={styles.titleContainer}>
-        <Link href="/signup">
-          <ThemedText type="link">Signup</ThemedText>
-        </Link>
-        <Link href="/login">
-          <ThemedText type="link">Login</ThemedText>
+        <Link href="/auth">
+          <ThemedText type="link">login or signup</ThemedText>
         </Link>
       </ThemedView>
+      <TouchableOpacity onPress={logout}>
+        <ThemedText type="link">Logout</ThemedText>
+      </TouchableOpacity>
     </ParallaxScrollView>
   );
 }

@@ -29,6 +29,7 @@ export function SignUpForm({
           fontWeight: "bold",
           marginTop: 60,
           marginBottom: 20,
+          paddingLeft: 20,
         }}
       >
         Join{" "}
