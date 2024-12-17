@@ -1,16 +1,15 @@
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { AuthButton } from "@/components/Signup-Login/AuthButton";
 import { AuthSegmentedControl } from "@/components/Signup-Login/AuthSegmentControl";
 import { AuthSwitchText } from "@/components/Signup-Login/AuthSwitchText";
 import { BackgroundBlur } from "@/components/Signup-Login/BackgroundBlur";
 import { SignInForm } from "@/components/Signup-Login/SignInForm";
 import { SignUpForm } from "@/components/Signup-Login/SignUpForm";
-import { ValidatedInput } from "@/components/Signup-Login/ValidatedInput";
 import { useAuth } from "@/hooks/useAuth";
 import { validateConfirmPassword, validateInput } from "@/utils/validators";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, View } from "react-native";
-import { red } from "react-native-reanimated/lib/typescript/Colors";
 
 export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
@@ -135,6 +134,7 @@ export default function AuthScreen() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
+        <LanguageSwitcher />
 
         {activeTab === "signin" ? (
           <SignInForm

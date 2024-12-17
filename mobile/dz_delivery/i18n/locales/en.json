@@ -1,0 +1,27 @@
+{
+  "auth": {
+    "signin": "Sign In",
+    "signup": "Sign Up",
+    "fullName": "Full Name",
+    "email": "Email",
+    "phone": "Phone",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signInEmail": "Email",
+    "signInPassword": "Password",
+    "loginSuccess": "Login successful",
+    "loginFailed": "Login failed",
+    "signupSuccess": "Signup successful",
+    "signupFailed": "Signup failed",
+    "passwordMismatch": "Passwords do not match",
+    "errors": {
+      "email": "Invalid email format",
+      "fullName": "Full name is required",
+      "password": "Password must be at least 6 characters",
+      "confirmPassword": "Passwords do not match"
+    },
+    "switchToSignup": "Don't have an account? Sign Up",
+    "switchToSignin": "Already have an account? Sign In",
+    "forgotPassword": "forgot password?"
+  }
+}

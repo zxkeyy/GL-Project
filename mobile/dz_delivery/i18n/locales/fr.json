@@ -1,0 +1,27 @@
+{
+  "auth": {
+    "signin": "Connexion",
+    "signup": "Inscription",
+    "fullName": "Nom complet",
+    "email": "Email",
+    "phone": "Téléphone",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmez le mot de passe",
+    "signInEmail": "Email",
+    "signInPassword": "Mot de passe",
+    "loginSuccess": "Connexion réussie",
+    "loginFailed": "Échec de la connexion",
+    "signupSuccess": "Inscription réussie",
+    "signupFailed": "Échec de l'inscription",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "errors": {
+      "email": "Format d'email invalide",
+      "fullName": "Le nom complet est requis",
+      "password": "Le mot de passe doit comporter au moins 6 caractères",
+      "confirmPassword": "Les mots de passe ne correspondent pas"
+    },
+    "switchToSignup": "Vous n'avez pas de compte ? Inscrivez-vous",
+    "switchToSignin": "Vous avez déjà un compte ? Connectez-vous",
+    "forgotPassword": "Mot de passe oublié ?"
+  }
+}
