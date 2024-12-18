@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
+import { useTranslation } from "react-i18next";
 
 interface AuthButtonProps {
   activeTab: "signin" | "signup";
@@ -8,6 +9,8 @@ interface AuthButtonProps {
 }
 
 export function AuthButton({ activeTab, onClick }: AuthButtonProps) {
+  const { t } = useTranslation();
+
   return (
     <TouchableOpacity
       style={{
@@ -26,7 +29,7 @@ export function AuthButton({ activeTab, onClick }: AuthButtonProps) {
           fontWeight: "600",
         }}
       >
-        {activeTab === "signin" ? "Sign in" : "Sign up"}
+        {t(`auth.buttons.${activeTab}`)}
       </ThemedText>
     </TouchableOpacity>
   );

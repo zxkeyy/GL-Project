@@ -1,0 +1,65 @@
+{
+  "auth": {
+    "errors": {
+      "email": "Format d'e-mail invalide",
+      "fullName": "Le nom complet est requis",
+      "password": "Le mot de passe doit comporter au moins 6 caractères",
+      "confirmPassword": "Les mots de passe ne correspondent pas"
+    },
+    "forgotPassword": "Mot de passe oublié ?",
+    "welcomeBack": "Welcom back to",
+    "appName": "Blitz",
+    "joinFamily": {
+      "prefix": "Rejoignez",
+      "suffix": "famille maintenant ! 🎉"
+    },
+    "switchText": {
+      "notSignedUp": "Vous n'avez pas encore de compte ? ",
+      "haveAccount": "Vous avez déjà un compte ? ",
+      "signUp": "S'inscrire",
+      "logIn": "Connexion"
+    },
+    "tabs": {
+      "signin": "Connexion",
+      "signup": "S'inscrire"
+    },
+    "buttons": {
+      "signin": "Connexion",
+      "signup": "S'inscrire"
+    },
+    "placeholders": {
+      "fullName": "Nom complet",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe"
+    },
+    "validations": {
+      "email": {
+        "required": "L'e-mail est requis",
+        "invalid": "Format d'e-mail invalide"
+      },
+      "password": {
+        "required": "Le mot de passe est requis",
+        "minLength": "Le mot de passe doit comporter au moins 8 caractères",
+        "uppercase": "Le mot de passe doit contenir une lettre majuscule",
+        "lowercase": "Le mot de passe doit contenir une lettre minuscule",
+        "number": "Le mot de passe doit contenir un chiffre"
+      },
+      "fullName": {
+        "required": "Le nom complet est requis"
+      },
+      "phone": {
+        "required": "Le numéro de téléphone est requis",
+        "invalid": "Numéro de téléphone invalide"
+      },
+      "confirmPassword": {
+        "required": "Veuillez confirmer votre mot de passe",
+        "mismatch": "Les mots de passe ne correspondent pas"
+      },
+      "generic": {
+        "required": "Le champ est requis"
+      }
+    }
+  }
+}

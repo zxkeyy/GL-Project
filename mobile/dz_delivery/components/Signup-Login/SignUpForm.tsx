@@ -1,7 +1,8 @@
 import React from "react";
-import { View, TextInput } from "react-native";
+import { View } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ValidatedInput } from "./ValidatedInput";
+import { useTranslation } from "react-i18next";
 
 interface SignUpFormProps {
   formData: {
@@ -20,6 +21,8 @@ export function SignUpForm({
   errors,
   onInputChange,
 }: SignUpFormProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       <ThemedText
@@ -32,7 +35,7 @@ export function SignUpForm({
           paddingLeft: 20,
         }}
       >
-        Join{" "}
+        {t("auth.joinFamily.prefix")}{" "}
         <ThemedText
           style={{
             color: "#4CAF50",
@@ -41,21 +44,20 @@ export function SignUpForm({
             textAlign: "center",
           }}
         >
-          Blitz
+          {t("auth.appName")}
         </ThemedText>{" "}
-        family now! 🎉
+        {t("auth.joinFamily.suffix")}
       </ThemedText>
-
       <View style={{ gap: 12, marginBottom: 24 }}>
         <ValidatedInput
-          placeholder="Full name"
+          placeholder={t("auth.placeholders.fullName")}
           value={formData.fullName}
           onChangeText={(value) => onInputChange("fullName", value)}
           autoCapitalize="words"
           error={errors.fullName?.[0]}
         />
         <ValidatedInput
-          placeholder="Email"
+          placeholder={t("auth.placeholders.email")}
           value={formData.email}
           onChangeText={(value) => onInputChange("email", value)}
           keyboardType="email-address"
@@ -63,21 +65,21 @@ export function SignUpForm({
           error={errors.email?.[0]}
         />
         <ValidatedInput
-          placeholder="(+213)"
+          placeholder={t("auth.placeholders.phone")}
           value={formData.phone}
           onChangeText={(value) => onInputChange("phone", value)}
           keyboardType="phone-pad"
           error={errors.phone?.[0]}
         />
         <ValidatedInput
-          placeholder="Password"
+          placeholder={t("auth.placeholders.password")}
           value={formData.password}
           onChangeText={(value) => onInputChange("password", value)}
           secureTextEntry
           error={errors.password?.[0]}
         />
         <ValidatedInput
-          placeholder="Confirm Password"
+          placeholder={t("auth.placeholders.confirmPassword")}
           value={formData.confirmPassword}
           onChangeText={(value) => onInputChange("confirmPassword", value)}
           secureTextEntry
