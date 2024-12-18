@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TextInput, TouchableOpacity, Image } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ValidatedInput } from "./ValidatedInput";
+import { useTranslation } from "react-i18next";
 
 interface SignInFormProps {
   formData: {
@@ -22,6 +23,8 @@ export function SignInForm({
   errors,
   onInputChange,
 }: SignInFormProps) {
+  const { t } = useTranslation();
+
   return (
     <>
       <Image
@@ -32,7 +35,6 @@ export function SignInForm({
           alignSelf: "center",
         }}
       />
-
       <ThemedText
         style={{
           fontSize: 28,
@@ -41,7 +43,7 @@ export function SignInForm({
           textAlign: "center",
         }}
       >
-        Welcome back to{" "}
+        {t("auth.welcomeBack")}{" "}
         <ThemedText
           style={{
             color: "#4CAF50",
@@ -50,13 +52,12 @@ export function SignInForm({
             textAlign: "center",
           }}
         >
-          Blitz
+          {t("auth.appName")}
         </ThemedText>
       </ThemedText>
-
       <View style={{ gap: 12, marginBottom: 24 }}>
         <ValidatedInput
-          placeholder="Email"
+          placeholder={t("auth.placeholders.email")}
           value={formData.signInEmail}
           onChangeText={(value) => onInputChange("signInEmail", value)}
           keyboardType="email-address"
@@ -64,7 +65,7 @@ export function SignInForm({
           error={errors.signInEmail?.[0]}
         />
         <ValidatedInput
-          placeholder="Password"
+          placeholder={t("auth.placeholders.password")}
           value={formData.signInPassword}
           onChangeText={(value) => onInputChange("signInPassword", value)}
           secureTextEntry
@@ -72,7 +73,7 @@ export function SignInForm({
         />
         <TouchableOpacity style={{ alignSelf: "flex-end" }}>
           <ThemedText style={{ color: "#4CAF50", fontSize: 14 }}>
-            Forgot password?
+            {t("auth.forgotPassword")}
           </ThemedText>
         </TouchableOpacity>
       </View>

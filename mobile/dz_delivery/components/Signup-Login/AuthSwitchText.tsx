@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
+import { useTranslation } from "react-i18next";
 
 interface AuthSwitchTextProps {
   activeTab: "signin" | "signup";
@@ -11,6 +12,8 @@ export function AuthSwitchText({
   activeTab,
   onTabChange,
 }: AuthSwitchTextProps) {
+  const { t } = useTranslation();
+
   return (
     <View
       style={{
@@ -21,8 +24,8 @@ export function AuthSwitchText({
     >
       <ThemedText style={{ color: "#666", fontSize: 14 }}>
         {activeTab === "signin"
-          ? "Haven't signed up yet? "
-          : "Already have an account? "}
+          ? t("auth.switchText.notSignedUp")
+          : t("auth.switchText.haveAccount")}
       </ThemedText>
       <TouchableOpacity
         onPress={() =>
@@ -36,7 +39,9 @@ export function AuthSwitchText({
             textDecorationLine: activeTab === "signup" ? "underline" : "none",
           }}
         >
-          {activeTab === "signin" ? "Sign up" : "Log in"}
+          {activeTab === "signin"
+            ? t("auth.switchText.signUp")
+            : t("auth.switchText.logIn")}
         </ThemedText>
       </TouchableOpacity>
     </View>

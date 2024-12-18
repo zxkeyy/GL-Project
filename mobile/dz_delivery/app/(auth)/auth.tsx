@@ -64,10 +64,24 @@ export default function AuthScreen() {
 
   async function handleLogin() {
     setLoading(true);
+
+    if (!formData.signInEmail) {
+      updateErrors("signInEmail", validateInput("email", formData.signInEmail));
+      return;
+    }
+    if (!formData.signInPassword) {
+      updateErrors(
+        "signInPassword",
+        validateInput("password", formData.signInPassword)
+      );
+      return;
+    }
+
     if (errors.signInEmail || errors.signInPassword) {
       setLoading(false);
       return;
     }
+
     const response = await login(formData.signInEmail, formData.signInPassword);
     if (!response.success) {
       alert(
@@ -89,7 +103,14 @@ export default function AuthScreen() {
   async function handleSignUp() {
     setLoading(true);
     if (formData.password !== formData.confirmPassword) {
-      updateErrors("confirmPassword", "Passwords do not match");
+      updateErrors(
+        "confirmPassword",
+        validateInput(
+          "confirmPassword",
+          formData.confirmPassword,
+          formData.password
+        )
+      );
       setLoading(false);
       return;
     }

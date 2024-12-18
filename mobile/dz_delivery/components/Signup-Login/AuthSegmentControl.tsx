@@ -1,6 +1,7 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
+import { useTranslation } from "react-i18next";
 
 interface AuthSegmentedControlProps {
   activeTab: "signin" | "signup";
@@ -11,6 +12,8 @@ export function AuthSegmentedControl({
   activeTab,
   onTabChange,
 }: AuthSegmentedControlProps) {
+  const { t } = useTranslation();
+
   return (
     <View
       style={{
@@ -42,7 +45,7 @@ export function AuthSegmentedControl({
             color: activeTab === "signin" ? "#fff" : "#000",
           }}
         >
-          Sign in
+          {t("auth.tabs.signin")}
         </ThemedText>
       </TouchableOpacity>
       <TouchableOpacity
@@ -63,7 +66,7 @@ export function AuthSegmentedControl({
             color: activeTab === "signup" ? "#fff" : "#000",
           }}
         >
-          Sign up
+          {t("auth.tabs.signup")}
         </ThemedText>
       </TouchableOpacity>
     </View>
