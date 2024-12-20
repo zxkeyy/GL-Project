@@ -1,16 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from .models import User
+from .models import PhoneVerification, User
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('email', 'full_name', 'is_staff', 'is_active')
-    list_filter = ('is_staff', 'is_active')
-    search_fields = ('email', 'full_name')
+    list_display = ('email', 'full_name', 'phone_number', 'is_staff', 'is_active', 'is_verified')
+    list_filter = ('is_staff', 'is_active', 'is_verified')
+    search_fields = ('email', 'phone_number', 'full_name')
     ordering = ('email',)
 
-    # Add custom fields to the add user form
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -18,17 +17,24 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-    # Specify the fields to be used when editing a user
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('full_name',)}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'user_permissions', 'groups')}),
+        ('Personal info', {'fields': ('full_name', 'phone_number',)}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_verified', 'user_permissions', 'groups')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
 
-    # Optional: You can exclude the "password" field from the list_display
     readonly_fields = ('last_login',)
 
-# Register the custom user admin and unregister the default Group model
+# Register the custom user admin
 admin.site.register(User, CustomUserAdmin)
-admin.site.unregister(Group)  # If you don't need to use groups in the admin
+
+
+@admin.register(PhoneVerification)
+class PhoneVerificationAdmin(admin.ModelAdmin):
+    list_display = ('phone_number', 'code', 'is_verified', 'created_at', 'updated_at')
+    list_filter = ('is_verified',)
+    search_fields = ('phone_number', 'code')
+    ordering = ('-created_at',)
+
+    readonly_fields = ('created_at', 'updated_at')
