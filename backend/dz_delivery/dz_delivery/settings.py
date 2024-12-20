@@ -187,6 +187,12 @@ SIMPLE_JWT = {
     'USER_AUTHENTICATION_RULE': 'users.authentication.inactive_user_authentication_rule',
 }
 
+PHONE_VERIFICATION = {
+    'MESSAGE':("Welcome to Blitz, Your verification code is: {code}"),
+    'TOKEN_LENGTH': 6,
+    'CODE_EXPIRATION_TIME': 300,
+}
+
 AUTH_USER_MODEL = 'users.User'
 
 # Email settings
