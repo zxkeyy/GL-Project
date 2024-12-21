@@ -12,7 +12,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField('full name', max_length=255, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_verified = models.BooleanField(default=False)
+    is_client_verified = models.BooleanField(default=False)
+    is_courier_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['full_name']
@@ -57,13 +58,14 @@ class DocumentType(models.Model):
     name = models.CharField(max_length=100)  # e.g., 'Passport', 'Driver License'
     code = models.SlugField(unique=True)  # e.g., 'passport', 'driver_license'
     description = models.TextField()
-    is_required = models.BooleanField(default=True)
+    is_client_required = models.BooleanField(default=False)
+    is_courier_required = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        ordering = ['-is_required']
+        ordering = ['-is_courier_required', '-is_client_required', 'name']
 
 class Document(models.Model):
     PENDING = 'pending'

@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.db import transaction
 from django.utils import timezone
+from django.db.models import Q
 
 from .models import Document, DocumentType
 from .permissions import IsActive, IsAdminOrReviewer
@@ -94,51 +95,79 @@ class DocumentViewSet(viewsets.ModelViewSet):
         ).order_by('-created_at')
 
         return Response(self.get_serializer(documents, many=True).data)
+    
+    def _update_user_verification_status(self, document):
+        user = document.user
+
+        required_docs = DocumentType.objects.filter(Q(is_client_required=True) | Q(is_courier_required=True))
+        client_required_docs = set(doc.id for doc in required_docs if doc.is_client_required)
+        courier_required_docs = set(doc.id for doc in required_docs if doc.is_courier_required)
+        user_docs = Document.objects.filter(user=user, status=Document.APPROVED).values_list('document_type_id', flat=True)
+        user_docs_set = set(user_docs)
+        
+        client_approved = client_required_docs.issubset(user_docs_set)
+        courier_approved = courier_required_docs.issubset(user_docs_set)
+
+        # Update user's verification status
+        user.is_client_verified = client_approved
+        user.is_courier_verified = courier_approved
+        user.save()
+
+        return client_approved, courier_approved
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdminOrReviewer], serializer_class=DocumentReviewSerializer)
     def review(self, request, pk=None):
-        with transaction.atomic():
-            document = self.get_object()
-            status_choice = request.data.get('status')
-            notes = request.data.get('reviewer_notes', '')
+        try:
+            with transaction.atomic():
+                document = self.get_object()
+                status_choice = request.data.get('status')
+                notes = request.data.get('reviewer_notes', '')
 
-            if status_choice not in [Document.APPROVED, 
-                                   Document.REJECTED]:
-                return Response(
-                    {'error': 'Invalid status'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                if status_choice not in [Document.APPROVED, 
+                                       Document.REJECTED]:
+                    return Response(
+                        {'error': 'Invalid status'},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
 
-            document.status = status_choice
-            document.reviewer_notes = notes
-            document.reviewed_at = timezone.now()
-            document.reviewed_by = request.user
-            document.save()
+                document.status = status_choice
+                document.reviewer_notes = notes
+                document.reviewed_at = timezone.now()
+                document.reviewed_by = request.user
+                document.save()
 
-            # Check if all required documents are approved
-            user = document.user
-            required_docs = DocumentType.objects.filter(is_required=True)
-            all_approved = all(
-                Document.objects.filter(
-                    user=user,
-                    document_type=doc_type,
-                    status=Document.APPROVED
-                ).exists()
-                for doc_type in required_docs
+                client_approved, courier_approved = self._update_user_verification_status(document)
+        
+                return Response({
+                    'status': 'success',
+                    'courier_approved': courier_approved,
+                    'client_approved': client_approved
+                })
+        except Exception as e:
+            return Response(
+                {'error': 'An error occurred during the transaction.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-            # Update user's verification status
-            user.is_verified = all_approved
-            user.save()
-
-            return Response({
-                'status': 'success',
-                'all_documents_approved': all_approved
-            })
-    
     @action(detail=False, methods=['get'])
-    def required_documents(self, request):
-        required_types = DocumentType.objects.filter(is_required=True)
+    def client_required_documents(self, request):
+        required_types = DocumentType.objects.filter(is_client_required=True)
+        user_documents = self.get_queryset()
+        
+        result = []
+        for doc_type in required_types:
+            user_doc = user_documents.filter(document_type=doc_type).first()
+            result.append({
+                'document_type': DocumentTypeSerializer(doc_type).data,
+                'status': user_doc.status if user_doc else None,
+                'uploaded': user_doc is not None
+            })
+        
+        return Response(result)
+
+    @action(detail=False, methods=['get'])
+    def courier_required_documents(self, request):
+        required_types = DocumentType.objects.filter(is_courier_required=True)
         user_documents = self.get_queryset()
         
         result = []

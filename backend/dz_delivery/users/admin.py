@@ -5,8 +5,8 @@ from .models import Document, DocumentType, PhoneVerification, User
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('email', 'full_name', 'phone_number', 'is_staff', 'is_active', 'is_verified')
-    list_filter = ('is_staff', 'is_active', 'is_verified')
+    list_display = ('email', 'full_name', 'phone_number', 'is_staff', 'is_active', 'is_client_verified', 'is_courier_verified')
+    list_filter = ('is_staff', 'is_active', 'is_client_verified', 'is_courier_verified')
     search_fields = ('email', 'phone_number', 'full_name')
     ordering = ('email',)
 
@@ -20,7 +20,7 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('full_name', 'phone_number',)}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_verified', 'user_permissions', 'groups')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_client_verified', 'is_courier_verified', 'user_permissions', 'groups')}),
         ('Important dates', {'fields': ('last_login',)}),
     )
 
@@ -41,7 +41,7 @@ class PhoneVerificationAdmin(admin.ModelAdmin):
 
 @admin.register(DocumentType)
 class DocumentTypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'code', 'is_required')
+    list_display = ('name', 'code', 'is_client_required', 'is_courier_required')
     search_fields = ('name', 'code')
     ordering = ('name',)
 

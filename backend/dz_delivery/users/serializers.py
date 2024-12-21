@@ -21,8 +21,8 @@ class UserCreateSerializer(UserCreateSerializer):
 class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
-        fields = ('id', 'email', 'phone_number', 'full_name', 'is_active', 'is_verified')
-        read_only_fields = ('email' ,'phone_number', 'is_active', 'is_verified')
+        fields = ('id', 'email', 'phone_number', 'full_name', 'is_active', 'is_client_verified', 'is_courier_verified')
+        read_only_fields = ('email' ,'phone_number', 'is_active', 'is_client_verified', 'is_courier_verified')
 
 
 class TokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -70,7 +70,7 @@ class PhoneSerializer(serializers.Serializer):
 class DocumentTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DocumentType
-        fields = ['id', 'name', 'code', 'description', 'is_required']
+        fields = ['id', 'name', 'code', 'description', 'is_client_required', 'is_courier_required']
 
 class DocumentSerializer(serializers.ModelSerializer):
     document_type_details = DocumentTypeSerializer(source='document_type', read_only=True)
