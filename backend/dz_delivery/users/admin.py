@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
-from .models import PhoneVerification, User
+from .models import Document, DocumentType, PhoneVerification, User
 
 class CustomUserAdmin(UserAdmin):
     model = User
@@ -35,6 +35,21 @@ class PhoneVerificationAdmin(admin.ModelAdmin):
     list_display = ('phone_number', 'code', 'is_verified', 'created_at', 'updated_at')
     list_filter = ('is_verified',)
     search_fields = ('phone_number', 'code')
+    ordering = ('-created_at',)
+
+    readonly_fields = ('created_at', 'updated_at')
+
+@admin.register(DocumentType)
+class DocumentTypeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code', 'is_required')
+    search_fields = ('name', 'code')
+    ordering = ('name',)
+
+@admin.register(Document)
+class DocumentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'document_type', 'status', 'created_at', 'updated_at')
+    list_filter = ('status', 'document_type')
+    search_fields = ('user__email', 'document_type__name')
     ordering = ('-created_at',)
 
     readonly_fields = ('created_at', 'updated_at')

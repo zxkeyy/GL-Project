@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core.validators import FileExtensionValidator
+from django.db.models import Q
 
 from .managers import UserManager
 
@@ -48,3 +50,59 @@ class PhoneVerification(models.Model):
         verbose_name = 'Phone Verification'
         verbose_name_plural = 'Phone Verifications'
         ordering = ['-created_at']
+
+
+# Document versioning models
+class DocumentType(models.Model):
+    name = models.CharField(max_length=100)  # e.g., 'Passport', 'Driver License'
+    code = models.SlugField(unique=True)  # e.g., 'passport', 'driver_license'
+    description = models.TextField()
+    is_required = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['-is_required']
+
+class Document(models.Model):
+    PENDING = 'pending'
+    APPROVED = 'approved'
+    REJECTED = 'rejected'
+    
+    STATUS_CHOICES = [
+        (PENDING, 'Pending Review'),
+        (APPROVED, 'Approved'),
+        (REJECTED, 'Rejected'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='documents')
+    document_type = models.ForeignKey(DocumentType, on_delete=models.PROTECT)
+    file = models.FileField(
+        upload_to='verification_documents/%Y/%m/%d/',
+        validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])]
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+
+    reviewer_notes = models.TextField(blank=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    reviewed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='reviewed_documents'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        constraints = [
+            # Only one pending or approved document per type per user
+            models.UniqueConstraint(
+                fields=['user', 'document_type'],
+                condition=Q(status__in=['pending', 'approved']),
+                name='unique_active_document'
+            )
+        ]
