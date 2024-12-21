@@ -52,6 +52,34 @@ class DocumentViewSet(viewsets.ModelViewSet):
                 "Unable to process document submission. Please try again."
             )
     
+    def update(self, request, *args, **kwargs):
+        document = self.get_object()
+        if document.user != request.user:
+            return Response(
+                {'error': 'You do not have permission to update this document'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if document.status != Document.PENDING:
+            return Response(
+                {'error': 'Only pending documents can be updated'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return super().update(request, *args, **kwargs)
+    
+    def partial_update(self, request, *args, **kwargs):
+        document = self.get_object()
+        if document.user != request.user:
+            return Response(
+                {'error': 'You do not have permission to update this document'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if document.status != Document.PENDING:
+            return Response(
+                {'error': 'Only pending documents can be updated'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return super().partial_update(request, *args, **kwargs)
+
     @action(detail=False, methods=['get'])
     def document_history(self, request):
         document_type_id = request.query_params.get('document_type')

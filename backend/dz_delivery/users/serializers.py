@@ -22,6 +22,7 @@ class UserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         model = User
         fields = ('id', 'email', 'phone_number', 'full_name', 'is_active', 'is_verified')
+        read_only_fields = ('email' ,'phone_number', 'is_active', 'is_verified')
 
 
 class TokenObtainPairSerializer(TokenObtainPairSerializer):
