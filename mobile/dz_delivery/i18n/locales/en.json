@@ -1,0 +1,65 @@
+{
+  "auth": {
+    "errors": {
+      "email": "Invalid email format",
+      "fullName": "Full name is required",
+      "password": "Password must be at least 6 characters",
+      "confirmPassword": "Passwords do not match"
+    },
+    "forgotPassword": "Forgot password?",
+    "welcomeBack": "Welcome back to",
+    "appName": "Blitz",
+    "joinFamily": {
+      "prefix": "Join",
+      "suffix": "family now! 🎉"
+    },
+    "switchText": {
+      "notSignedUp": "Haven't signed up yet? ",
+      "haveAccount": "Already have an account? ",
+      "signUp": "Sign up",
+      "logIn": "Log in"
+    },
+    "tabs": {
+      "signin": "Sign in",
+      "signup": "Sign up"
+    },
+    "buttons": {
+      "signin": "Sign in",
+      "signup": "Sign up"
+    },
+    "placeholders": {
+      "fullName": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "confirmPassword": "Confirm Password"
+    },
+    "validations": {
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email format"
+      },
+      "password": {
+        "required": "Password is required",
+        "minLength": "Password must be at least 8 characters",
+        "uppercase": "Password must contain an uppercase letter",
+        "lowercase": "Password must contain a lowercase letter",
+        "number": "Password must contain a number"
+      },
+      "fullName": {
+        "required": "Full name is required"
+      },
+      "phone": {
+        "required": "Phone number is required",
+        "invalid": "Invalid phone number"
+      },
+      "confirmPassword": {
+        "required": "Please confirm your password",
+        "mismatch": "Passwords do not match"
+      },
+      "generic": {
+        "required": "Field is required"
+      }
+    }
+  }
+}

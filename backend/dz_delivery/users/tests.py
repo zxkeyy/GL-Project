@@ -38,7 +38,6 @@ class AuthenticationTestCase(TestCase):
         new_user_data = {
             'email': 'newuser@example.com',
             'password': 'NewPassword456!',
-            're_password': 'NewPassword456!',
             'full_name': 'New User',
         }
         
@@ -112,7 +111,6 @@ class AuthenticationTestCase(TestCase):
         password_change_data = {
             'current_password': self.user_data['password'],
             'new_password': 'NewSecurePassword789!',
-            're_new_password': 'NewSecurePassword789!'
         }
         
         response = self.client.post(password_change_url, password_change_data)

@@ -1,0 +1,14 @@
+{
+  "welcome": "Welcome to our App!",
+  "greeting": "Hello, {{name}}",
+  "description": "This is a multilingual React application.",
+  "get_started": "Get Started",
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "required": "This field is required"
+  },
+  "direction": "ltr"
+}
