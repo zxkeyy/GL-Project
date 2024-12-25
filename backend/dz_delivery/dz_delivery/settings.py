@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'djoser',
     #
     'users',
+    'delivery',
 ]
 
 MIDDLEWARE = [
