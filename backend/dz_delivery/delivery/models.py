@@ -68,7 +68,7 @@ class Driver(TimeStampedModel):
         verbose_name = _("Driver")
         verbose_name_plural = _("Drivers")
         indexes = [
-            models.Index(fields=['is_active', 'available']),
+            models.Index(fields=['available']),
             models.Index(fields=['rating']),
         ]
 
