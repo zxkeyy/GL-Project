@@ -60,6 +60,13 @@ class PackageSerializer(serializers.ModelSerializer):
         return random.randint(100000, 999999)
 
 
+class PackageTrackingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = ['tracking_number', 'status', 'current_address', 'delivery_progress']
+        read_only_fields = ['tracking_number', 'status', 'current_address', 'delivery_progress']
+
+
 class DeliveryStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeliveryStatus

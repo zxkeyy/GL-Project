@@ -11,7 +11,7 @@ from django.utils import timezone
 from users.permissions import IsAdminOrDriver
 
 from .models import Driver, Delivery, Package, ServiceArea, DeliveryStatus
-from .serializers import DeliverySerializer, DeliveryStatusSerializer, DriverSerializer, DeliveryListSerializer, EmptySerializer, PackageSerializer, ServiceAreaSerializer
+from .serializers import DeliverySerializer, DeliveryStatusSerializer, DriverSerializer, DeliveryListSerializer, EmptySerializer, PackageSerializer, PackageTrackingSerializer, ServiceAreaSerializer
 
 class DriverViewSet(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
@@ -105,6 +105,17 @@ class PackageViewSet(viewsets.ModelViewSet):
         package.status = 'CANCELLED'
         package.save()
         return Response({'status': 'package cancelled'})
+    
+    # tracking endpoint
+    @action(detail=False, methods=['get'], serializer_class=PackageTrackingSerializer, permission_classes=[])
+    def track(self, request):
+        tracking_number = request.query_params.get('tracking_number')
+        if not tracking_number:
+            raise ValidationError("tracking_number is required")
+            
+        package = get_object_or_404(Package, tracking_number=tracking_number)
+        serializer = PackageTrackingSerializer(package)
+        return Response(serializer.data)
 
 
 class DeliveryViewSet(viewsets.ModelViewSet):
