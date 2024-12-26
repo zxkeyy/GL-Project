@@ -15,3 +15,7 @@ class IsAdminOrReviewer(permissions.BasePermission):
 class IsAdminOrDriver(permissions.BasePermission):
     def has_permission(self, request, view):
         return request.user and (request.user.is_staff or request.user.is_driver_verified)
+
+class IsAdminOrClient(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user and (request.user.is_staff or request.user.is_client_verified)

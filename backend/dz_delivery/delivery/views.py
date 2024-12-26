@@ -11,7 +11,7 @@ from django.utils import timezone
 from users.permissions import IsAdminOrDriver
 
 from .models import Driver, Delivery, Package, ServiceArea, DeliveryStatus
-from .serializers import DeliverySerializer, DeliveryStatusSerializer, DriverSerializer, DeliveryListSerializer, PackageSerializer, ServiceAreaSerializer
+from .serializers import DeliverySerializer, DeliveryStatusSerializer, DriverSerializer, DeliveryListSerializer, EmptySerializer, PackageSerializer, ServiceAreaSerializer
 
 class DriverViewSet(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
@@ -81,7 +81,20 @@ class PackageViewSet(viewsets.ModelViewSet):
         )
 
     def perform_create(self, serializer):
-        serializer.save(sender=self.request.user)
+        generated_code = serializer.generate_verification_code()
+        serializer.save(sender=self.request.user, verification_code=generated_code)
+        self.send_verification_code(serializer.instance)
+    
+    def send_verification_code(self, package):
+        # Send verification code to recipient
+        print(f"Verification code for package {package.tracking_number}: {package.verification_code}")
+        return True
+
+    @action(detail=True, methods=['post'], serializer_class=EmptySerializer)
+    def resend_verification_code(self, request, pk=None):
+        package = self.get_object()
+        self.send_verification_code(package)
+        return Response({'status': 'verification code resent'})
 
     @action(detail=True, methods=['post'])
     def cancel(self, request, pk=None):
@@ -96,14 +109,18 @@ class PackageViewSet(viewsets.ModelViewSet):
 
 class DeliveryViewSet(viewsets.ModelViewSet):
     queryset = Delivery.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['status', 'driver']
+    filterset_fields = ['package__status', 'driver']
     search_fields = ['package__tracking_number']
 
     def get_serializer_class(self):
         if self.action == 'list':
             return DeliveryListSerializer
+        if self.action == 'accept':
+            return EmptySerializer
+        if self.action == 'update_status':
+            return DeliveryStatusSerializer
         return DeliverySerializer
 
     def get_queryset(self):
@@ -114,31 +131,38 @@ class DeliveryViewSet(viewsets.ModelViewSet):
             Q(package__sender=user) | Q(driver__user=user)
         )
 
-    @action(detail=True, methods=['post'])
-    def assign_driver(self, request, pk=None):
+    @action(detail=True, methods=['post'], permission_classes=[IsAdminOrDriver])
+    def accept(self, request, pk=None):
         delivery = self.get_object()
-        driver_id = request.data.get('driver_id')
-        
-        if not driver_id:
-            raise ValidationError("driver_id is required")
+        driver = get_object_or_404(Driver, user=request.user)
+
+        if delivery.package.status != 'REQUESTED':
+            raise ValidationError("Delivery is not available for acceptance")
             
-        driver = get_object_or_404(Driver, id=driver_id)
+        if delivery.driver:
+            raise ValidationError("Delivery has already been accepted by another driver")
             
         delivery.driver = driver
-        delivery.status = 'ASSIGNED'
+        delivery.package.status = 'ASSIGNED'
         delivery.save()
-        
-        return Response({'status': 'driver assigned'})
+        return Response({'status': 'delivery accepted'})
 
     @action(detail=True, methods=['post'])
     def update_status(self, request, pk=None):
+        # need to add validation for status transitions mba3d
         delivery = self.get_object()
         status = request.data.get('status')
         location = request.data.get('location')
         notes = request.data.get('notes', '')
 
+        if not request.user.is_staff and request.user != delivery.driver.user:
+            raise ValidationError("You are not authorized to update delivery status")
+
         if not status:
             raise ValidationError("status is required")
+        
+        if status == 'DELIVERED':
+            raise ValidationError("use verify_delivery endpoint to mark delivery as delivered")
 
         if status not in [choice[0] for choice in Package.STATUS_CHOICES]:
             raise ValidationError("Invalid status")
@@ -170,17 +194,17 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         delivery = self.get_object()
         rating = request.data.get('rating')
         feedback = request.data.get('feedback', '')
+
+        if delivery.status != 'DELIVERED':
+            raise ValidationError("Delivery must be completed before rating")
         
         if not rating or not isinstance(rating, int) or rating < 1 or rating > 5:
             raise ValidationError("Valid rating (1-5) is required")
 
         user = request.user
-        if user == delivery.package.sender:
+        if user == delivery.driver.user:
             delivery.driver_rating = rating
             delivery.driver_feedback = feedback
-        elif user == delivery.driver.user:
-            delivery.customer_rating = rating
-            delivery.customer_feedback = feedback
         else:
             raise ValidationError("You are not authorized to rate this delivery")
 
@@ -216,6 +240,7 @@ class DeliveryStatusViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['delivery', 'status']
+    allowed_methods = ['GET']
 
     def get_queryset(self):
         user = self.request.user

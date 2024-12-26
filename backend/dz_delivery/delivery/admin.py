@@ -8,10 +8,10 @@ class DriverAdmin(admin.ModelAdmin):
     list_display = ('get_driver_name', 'vehicle_type',
                    'available', 'rating', 'completion_rate')
     list_filter = ( 'available', 'vehicle_type')
-    search_fields = ('user__username', 'user__email', 'vehicle_plate')
+    search_fields = ('user__full_name', 'user__email', 'vehicle_plate')
     
     def get_driver_name(self, obj):
-        return f"{obj.user.get_full_name()} ({obj.user.username})"
+        return f"{obj.user.get_full_name()}"
     get_driver_name.short_description = 'Driver'
 
 @admin.register(ServiceArea)
@@ -22,7 +22,7 @@ class ServiceAreaAdmin(admin.ModelAdmin):
 
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('tracking_number', 'sender', 'recipient_name', 'status', 
+    list_display = ('tracking_number', 'sender', 'recipient_name', 'status', 'verification_code',
                    'priority', 'created_at')
     list_filter = ('status', 'priority', 'is_fragile', 'requires_signature')
     search_fields = ('tracking_number', 'recipient_name', 'recipient_phone')
@@ -39,7 +39,7 @@ class PackageAdmin(admin.ModelAdmin):
                       'insurance_amount')
         }),
         ('Delivery Information', {
-            'fields': ('pickup_address', 'delivery_address', 'notes')
+            'fields': ('pickup_address', 'delivery_address', 'current_address',  'verification_code', 'notes')
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
@@ -54,7 +54,7 @@ class DeliveryStatusInline(admin.TabularInline):
 
 @admin.register(Delivery)
 class DeliveryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_tracking_number', 'driver', 'get_status', 
+    list_display = ('id', 'get_tracking_number', 'driver', 'get_status', 'pickup_address', 'dropoff_address',
                    'estimated_delivery_time', 'is_delayed')
     list_filter = ('package__status', 'driver')
     search_fields = ('package__tracking_number', 'driver__user__username')

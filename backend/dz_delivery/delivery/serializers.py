@@ -1,7 +1,8 @@
+import random
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from backend.dz_delivery.users.serializers import UserSerializer
+from users.serializers import UserSerializer
 from .models import Delivery, DeliveryStatus, Driver, Package, ServiceArea
 
 class ServiceAreaSerializer(serializers.ModelSerializer):
@@ -19,7 +20,6 @@ class DriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
         fields = ['id', 'user', 'vehicle_type', 'vehicle_plate', 
-                 'license_number', 
                  'current_location', 'service_areas', 'rating', 
                  'total_deliveries', 'successful_deliveries', 
                  'completion_rate', 'available', 'last_active']
@@ -41,11 +41,11 @@ class PackageSerializer(serializers.ModelSerializer):
         model = Package
         fields = ['id', 'tracking_number', 'sender', 'recipient_name',
                  'recipient_phone', 'recipient_email', 'pickup_address',
-                 'delivery_address', 'status', 'verification_code',
+                 'delivery_address', 'current_address', 'status', 'verification_code',
                  'weight', 'dimensions', 'priority', 'is_fragile',
-                 'requires_signature', 'insurance_amount', 'notes',
+                 'requires_signature', 'cost', 'insurance_amount', 'notes',
                 'delivery_progress', 'created_at']
-        read_only_fields = ['tracking_number', 'verification_code', 
+        read_only_fields = ['status', 'current_address', 'cost', 'insurance_amount', 'tracking_number', 'verification_code', 
                            'created_at']
 
     def validate_dimensions(self, value):
@@ -55,6 +55,9 @@ class PackageSerializer(serializers.ModelSerializer):
                 "Dimensions must include length, width, and height"
             )
         return value
+    
+    def generate_verification_code(self):
+        return random.randint(100000, 999999)
 
 
 class DeliveryStatusSerializer(serializers.ModelSerializer):
@@ -62,11 +65,10 @@ class DeliveryStatusSerializer(serializers.ModelSerializer):
         model = DeliveryStatus
         fields = ['id', 'delivery', 'status', 'location', 
                  'notes', 'updated_by', 'created_at']
-        read_only_fields = ['created_at']
+        read_only_fields = ['delivery', 'updated_by', 'created_at']
 
 
 class DeliverySerializer(serializers.ModelSerializer):
-    package = PackageSerializer()
     driver = DriverSerializer(read_only=True)
     status_updates = DeliveryStatusSerializer(many=True, read_only=True)
     is_delayed = serializers.BooleanField(read_only=True)
@@ -74,15 +76,17 @@ class DeliverySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Delivery
-        fields = ['id', 'package', 'driver', 'service_area', 
+        fields = ['id', 'package', 'driver', 'service_area',
                  'base_fee', 'distance_fee', 'additional_fees',
                  'total_amount', 'estimated_pickup_time',
                  'estimated_delivery_time', 'actual_pickup_time',
-                 'actual_delivery_time', 'route_info', 'distance',
-                 'driver_rating', 'customer_rating', 'customer_feedback',
+                 'actual_delivery_time', 'pickup_address', 'dropoff_address', 'route_info', 'distance',
+                 'driver_rating',
                  'driver_feedback', 'status_updates', 'is_delayed',
                  'delivery_duration', 'created_at']
-        read_only_fields = ['total_amount', 'created_at']
+        read_only_fields = ['driver', 'estimated_pickup_time',
+                 'estimated_delivery_time', 'actual_pickup_time',
+                 'actual_delivery_time', 'total_amount', 'created_at']
 
     def validate(self, data):
         if data['estimated_pickup_time'] >= data['estimated_delivery_time']:
@@ -91,16 +95,15 @@ class DeliverySerializer(serializers.ModelSerializer):
             )
         return data
 
-    def create(self, validated_data):
-        package_data = validated_data.pop('package')
-        package = Package.objects.create(**package_data)
-        return Delivery.objects.create(package=package, **validated_data)
-
 
 class DeliveryListSerializer(DeliverySerializer):
     package = serializers.PrimaryKeyRelatedField(read_only=True)
     driver = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta(DeliverySerializer.Meta):
-        fields = ['id', 'package', 'driver', 'status', 
+        fields = ['id', 'package', 'driver', 
                  'estimated_delivery_time', 'is_delayed']
+
+
+class EmptySerializer(serializers.Serializer):
+    pass

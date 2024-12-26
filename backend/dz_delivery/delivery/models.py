@@ -128,6 +128,7 @@ class Package(TimeStampedModel):
     recipient_email = models.EmailField(_("Recipient Email"), null=True, blank=True)
     pickup_address = models.JSONField(_("Pickup Address"))
     delivery_address = models.JSONField(_("Delivery Address"))
+    current_address = models.JSONField(_("Current Address"), null=True, blank=True)
     status = models.CharField(
         _("Status"),
         max_length=20,
@@ -148,6 +149,7 @@ class Package(TimeStampedModel):
     )
     is_fragile = models.BooleanField(_("Fragile"), default=False)
     requires_signature = models.BooleanField(_("Requires Signature"), default=False)
+    cost = models.DecimalField(_("Cost"), max_digits=10, decimal_places=2, default=0.00)
     insurance_amount = models.DecimalField(
         _("Insurance Amount"),
         max_digits=10,
@@ -155,6 +157,13 @@ class Package(TimeStampedModel):
         default=0.00
     )
     notes = models.TextField(_("Delivery Notes"), blank=True)
+    customer_rating = models.IntegerField(
+        _("Customer Rating"),
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
+    customer_feedback = models.TextField(_("Customer Feedback"), blank=True)
 
     class Meta:
         verbose_name = _("Package")
@@ -194,7 +203,9 @@ class Delivery(TimeStampedModel):
     driver = models.ForeignKey(
         Driver,
         on_delete=models.PROTECT,
-        related_name='deliveries'
+        related_name='deliveries',
+        null=True,
+        blank=True
     )
     service_area = models.ForeignKey(
         ServiceArea,
@@ -206,13 +217,16 @@ class Delivery(TimeStampedModel):
     additional_fees = models.JSONField(
         _("Additional Fees"),
         default=dict,
-        help_text=_("JSON object containing fee type and amount")
+        help_text=_("JSON object containing fee type and amount"),
+        blank=True
     )
     total_amount = models.DecimalField(_("Total Amount"), max_digits=10, decimal_places=2)
-    estimated_pickup_time = models.DateTimeField(_("Estimated Pickup"))
-    estimated_delivery_time = models.DateTimeField(_("Estimated Delivery"))
+    estimated_pickup_time = models.DateTimeField(_("Estimated Pickup"), null=True, blank=True)
+    estimated_delivery_time = models.DateTimeField(_("Estimated Delivery"), null=True, blank=True)
     actual_pickup_time = models.DateTimeField(_("Actual Pickup"), null=True, blank=True)
     actual_delivery_time = models.DateTimeField(_("Actual Delivery"), null=True, blank=True)
+    pickup_address = models.JSONField(_("Pickup Location"), null=True, blank=True)
+    dropoff_address = models.JSONField(_("Dropoff Location"), blank=True)
     route_info = models.JSONField(_("Route Information"), null=True, blank=True)
     distance = models.FloatField(_("Distance (km)"), validators=[MinValueValidator(0.1)])
     driver_rating = models.IntegerField(
@@ -221,13 +235,6 @@ class Delivery(TimeStampedModel):
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     )
-    customer_rating = models.IntegerField(
-        _("Customer Rating"),
-        null=True,
-        blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
-    customer_feedback = models.TextField(_("Customer Feedback"), blank=True)
     driver_feedback = models.TextField(_("Driver Feedback"), blank=True)
 
     class Meta:
@@ -244,7 +251,7 @@ class Delivery(TimeStampedModel):
     @property
     def is_delayed(self):
         """Check if delivery is delayed."""
-        if not self.actual_delivery_time and datetime.now() > self.estimated_delivery_time:
+        if self.estimated_delivery_time and not self.actual_delivery_time and datetime.now() > self.estimated_delivery_time:
             return True
         return False
 
