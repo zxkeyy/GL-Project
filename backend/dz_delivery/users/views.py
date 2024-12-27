@@ -5,6 +5,8 @@ from rest_framework.decorators import action
 from django.db import transaction
 from django.utils import timezone
 from django.db.models import Q
+from django.shortcuts import redirect
+from djoser.views import UserViewSet
 
 from .models import Document, DocumentType
 from .permissions import IsActive, IsAdminOrReviewer
@@ -194,3 +196,16 @@ class DocumentViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         return super().destroy(request, *args, **kwargs)
+
+
+class UserViewSet(UserViewSet):
+    @action(["post"], detail=False)
+    def activation(self, request, *args, **kwargs):
+        response = super().activation(request, *args, **kwargs)
+        if response.status_code == 204:
+            redirect_id = request.query_params.get('redirect_id')
+            if redirect_id == 'web':
+                return redirect("https://yourwebapp.com/activation-success/")
+            elif redirect_id == "mobile":
+                return redirect("yourapp://activation-success/")
+        return response
