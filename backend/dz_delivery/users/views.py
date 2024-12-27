@@ -99,21 +99,21 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def _update_user_verification_status(self, document):
         user = document.user
 
-        required_docs = DocumentType.objects.filter(Q(is_client_required=True) | Q(is_courier_required=True))
+        required_docs = DocumentType.objects.filter(Q(is_client_required=True) | Q(is_driver_required=True))
         client_required_docs = set(doc.id for doc in required_docs if doc.is_client_required)
-        courier_required_docs = set(doc.id for doc in required_docs if doc.is_courier_required)
+        driver_required_docs = set(doc.id for doc in required_docs if doc.is_driver_required)
         user_docs = Document.objects.filter(user=user, status=Document.APPROVED).values_list('document_type_id', flat=True)
         user_docs_set = set(user_docs)
         
         client_approved = client_required_docs.issubset(user_docs_set)
-        courier_approved = courier_required_docs.issubset(user_docs_set)
+        driver_approved = driver_required_docs.issubset(user_docs_set)
 
         # Update user's verification status
         user.is_client_verified = client_approved
-        user.is_courier_verified = courier_approved
+        user.is_driver_verified = driver_approved
         user.save()
 
-        return client_approved, courier_approved
+        return client_approved, driver_approved
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdminOrReviewer], serializer_class=DocumentReviewSerializer)
     def review(self, request, pk=None):
@@ -136,11 +136,11 @@ class DocumentViewSet(viewsets.ModelViewSet):
                 document.reviewed_by = request.user
                 document.save()
 
-                client_approved, courier_approved = self._update_user_verification_status(document)
+                client_approved, driver_approved = self._update_user_verification_status(document)
         
                 return Response({
                     'status': 'success',
-                    'courier_approved': courier_approved,
+                    'driver_approved': driver_approved,
                     'client_approved': client_approved
                 })
         except Exception as e:
@@ -166,8 +166,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
         return Response(result)
 
     @action(detail=False, methods=['get'])
-    def courier_required_documents(self, request):
-        required_types = DocumentType.objects.filter(is_courier_required=True)
+    def driver_required_documents(self, request):
+        required_types = DocumentType.objects.filter(is_driver_required=True)
         user_documents = self.get_queryset()
         
         result = []
