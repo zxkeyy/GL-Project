@@ -76,9 +76,7 @@ class PackageViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
-        return self.queryset.filter(
-            Q(sender=user) | Q(delivery__driver__user=user)
-        )
+        return self.queryset.filter(sender=user)
 
     def perform_create(self, serializer):
         generated_code = serializer.generate_verification_code()
@@ -89,6 +87,13 @@ class PackageViewSet(viewsets.ModelViewSet):
         # Send verification code to recipient
         print(f"Verification code for package {package.tracking_number}: {package.verification_code}")
         return True
+    
+    @action(detail=False, methods=['get'])
+    def my_packages(self, request):
+        user = request.user
+        packages = Package.objects.filter(sender=user)
+        serializer = PackageSerializer(packages, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'], serializer_class=EmptySerializer)
     def resend_verification_code(self, request, pk=None):
@@ -138,9 +143,13 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return self.queryset
-        return self.queryset.filter(
-            Q(package__sender=user) | Q(driver__user=user)
-        )
+        return self.queryset
+    
+    @action(detail=False, methods=['get'])
+    def available_deliveries(self, request):
+        deliveries = Delivery.objects.filter(package__status='REQUESTED')
+        serializer = DeliveryListSerializer(deliveries, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAdminOrDriver])
     def accept(self, request, pk=None):
@@ -199,6 +208,16 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         delivery.save()
 
         return Response({'status': 'delivery status updated'})
+    
+    @action(detail=False, methods=['get'])
+    def delivery_history(self, request):
+        user = request.user
+        if user.is_staff:
+            deliveries = self.queryset.all()
+        else:
+            deliveries = self.queryset.filter(driver__user=user)
+        serializer = DeliveryListSerializer(deliveries, many=True)
+        return Response(serializer.data)
 
     @action(detail=True, methods=['post'])
     def rate_delivery(self, request, pk=None):
