@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TextInput, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ValidatedInput } from "./ValidatedInput";
 import { useTranslation } from "react-i18next";
