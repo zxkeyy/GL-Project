@@ -158,6 +158,51 @@ export const useAuth = () => {
     }
   };
 
+  const registerPhone = async (phone: string) => {
+    setLoading(true);
+    try {
+      await apiClient.post("/auth/phone/register/?redirect_id=mobile", {
+        phone_number: phone,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Phone registration error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Phone registration failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyPhone = async (phone: string, code: string) => {
+    setLoading(true);
+    try {
+      await apiClient.post("/auth/phone/verify/?redirect_id=mobile", {
+        phone_number: phone,
+        code,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Phone verification error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Phone verification failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Token refresh mechanism
   const refreshAccessToken = async () => {
     if (!refreshToken) return null;
@@ -193,6 +238,8 @@ export const useAuth = () => {
     logout,
     signup: createAccount,
     resendActivationEmail,
+    registerPhone,
+    verifyPhone,
     user,
     accessToken,
     refreshToken,
