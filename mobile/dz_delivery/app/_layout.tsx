@@ -44,7 +44,7 @@ export default function RootLayout() {
         {!accessToken ? (
           <Stack.Screen name="(auth)/auth" />
         ) : !user?.isActive ? (
-          <Stack.Screen name="(auth)/verification" />
+          <Stack.Screen name="(verification)" />
         ) : (
           <Stack.Screen name="(protected)" />
         )}

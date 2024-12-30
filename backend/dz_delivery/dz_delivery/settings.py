@@ -175,7 +175,7 @@ DJOSER = {
         'current_user': 'users.serializers.UserSerializer',
     },
     'EMAIL': {
-        'activation': 'djoser.email.ActivationEmail',
+        'activation': 'users.email.CustomActivationEmail',
     },
 }
 

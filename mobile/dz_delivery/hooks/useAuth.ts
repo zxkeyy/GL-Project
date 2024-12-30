@@ -9,6 +9,7 @@ interface JWTClaims {
   fullname: string;
   email: string;
   is_active: boolean;
+  is_driver_verified: boolean;
 }
 
 export const useAuth = () => {
@@ -24,13 +25,15 @@ export const useAuth = () => {
         data.user_id &&
         data.fullname &&
         data.email &&
-        typeof data.is_active === "boolean"
+        typeof data.is_active === "boolean" &&
+        typeof data.is_driver_verified === "boolean"
       ) {
         return {
           id: data.user_id,
           fullName: data.fullname,
           email: data.email,
           isActive: data.is_active,
+          isDriverVerified: data.is_driver_verified,
         };
       } else {
         console.error(`Invalid token structure: ${JSON.stringify(data)}`);
@@ -85,7 +88,7 @@ export const useAuth = () => {
     setLoading(true);
     try {
       // First, create the account
-      const response = await apiClient.post("/auth/users/", {
+      const response = await apiClient.post("/auth/users/?redirect_id=mobile", {
         email,
         full_name: fullName,
         password,
@@ -130,6 +133,76 @@ export const useAuth = () => {
     }
   };
 
+  const resendActivationEmail = async (email: string) => {
+    setLoading(true);
+    try {
+      await apiClient.post(
+        "/auth/users/resend_activation/?redirect_id=mobile",
+        { email }
+      );
+      return { success: true };
+    } catch (error) {
+      console.error("Resend activation email error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Resend activation email failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const registerPhone = async (phone: string) => {
+    setLoading(true);
+    try {
+      await apiClient.post("/auth/phone/register/?redirect_id=mobile", {
+        phone_number: phone,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Phone registration error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Phone registration failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyPhone = async (phone: string, code: string) => {
+    setLoading(true);
+    try {
+      await apiClient.post("/auth/phone/verify/?redirect_id=mobile", {
+        phone_number: phone,
+        code,
+      });
+      return { success: true };
+    } catch (error) {
+      console.error("Phone verification error:", error);
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Phone verification failed",
+        data: (error as any).response?.data
+          ? (error as any).response.data
+          : null,
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Token refresh mechanism
   const refreshAccessToken = async () => {
     if (!refreshToken) return null;
@@ -164,6 +237,9 @@ export const useAuth = () => {
     login: authenticate,
     logout,
     signup: createAccount,
+    resendActivationEmail,
+    registerPhone,
+    verifyPhone,
     user,
     accessToken,
     refreshToken,
