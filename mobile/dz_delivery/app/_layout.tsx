@@ -36,8 +36,6 @@ export default function RootLayout() {
     return null;
   }
 
-  console.log("RootLayout", { user, accessToken });
-
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
