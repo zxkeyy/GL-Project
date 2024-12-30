@@ -30,6 +30,20 @@ export default function AuthLayout() {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="document-submission"
+          options={{
+            title: "Verify your account",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="register-phone"
+          options={{
+            title: "Verify your account",
+            headerShown: false,
+          }}
+        />
       </Stack>
     </View>
   );
