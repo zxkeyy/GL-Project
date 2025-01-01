@@ -1,6 +1,7 @@
 import InstantOfferCard from "@/components/Home/InstantOfferCard";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
+import useDeliveries from "@/hooks/useDeliveries";
 import React from "react";
 import {
   View,
@@ -31,6 +32,8 @@ const offers = [
 ];
 
 export default function DeliveryScreen() {
+  const { deliveries } = useDeliveries();
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
       {/* Header */}
@@ -147,7 +150,7 @@ export default function DeliveryScreen() {
             }}
           >
             {offers.map((item) => (
-              <InstantOfferCard offer={item} />
+              <InstantOfferCard offer={item} key={item.id} />
             ))}
           </ScrollView>
         </View>
@@ -171,8 +174,8 @@ export default function DeliveryScreen() {
             <ThemedText style={{ color: "#666" }}>See more</ThemedText>
           </TouchableOpacity>
         </View>
-        {offers.map((item) => (
-          <OfferCard offer={item} />
+        {deliveries.map((item) => (
+          <OfferCard offer={item} key={item.id} />
         ))}
       </View>
     </ScrollView>

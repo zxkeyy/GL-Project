@@ -1,7 +1,8 @@
-import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { Modal, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
 
 interface OfferTemp {
   id: number;
@@ -13,10 +14,17 @@ interface OfferTemp {
 }
 
 interface Props {
-  offer: OfferTemp;
+  offer: Delivery;
 }
 
 const OfferCard = ({ offer }: Props) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const { acceptDelivery } = useDeliveries();
+
+  const handleAcceptOffer = () => {
+    acceptDelivery(offer.id);
+  };
+
   return (
     <View
       key={offer.id}
@@ -46,7 +54,7 @@ const OfferCard = ({ offer }: Props) => {
       <View style={{ marginLeft: 9, flex: 1 }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <ThemedText style={{ fontSize: 13, fontWeight: "500" }}>
-            {offer.offerName}
+            {offer.dropoff_address.street}
           </ThemedText>
           <ThemedText
             style={{
@@ -56,7 +64,7 @@ const OfferCard = ({ offer }: Props) => {
               marginRight: 4,
             }}
           >
-            {offer.price}DA
+            {offer.total_amount}DA
           </ThemedText>
         </View>
         <View
@@ -71,7 +79,11 @@ const OfferCard = ({ offer }: Props) => {
           <ThemedText
             style={{ marginLeft: 2, fontSize: 11, color: "#00000073" }}
           >
-            {offer.offerDescription}
+            {offer.dropoff_address.street +
+              ", " +
+              offer.dropoff_address.city +
+              ", " +
+              offer.dropoff_address.state}
           </ThemedText>
         </View>
 
@@ -91,6 +103,7 @@ const OfferCard = ({ offer }: Props) => {
               flexDirection: "row",
               justifyContent: "center",
             }}
+            onPress={() => setIsOpen(true)}
           >
             <Icon name="map-outline" size={12} color="#666" />
             <ThemedText
@@ -116,6 +129,7 @@ const OfferCard = ({ offer }: Props) => {
               flexDirection: "row",
               justifyContent: "center",
             }}
+            onPress={handleAcceptOffer}
           >
             <ThemedText
               style={{ color: "#396A3D", fontWeight: "600", fontSize: 12 }}
@@ -125,6 +139,58 @@ const OfferCard = ({ offer }: Props) => {
           </TouchableOpacity>
         </View>
       </View>
+      <Modal
+        visible={isOpen}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsOpen(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: 10,
+              padding: 10,
+              minWidth: 200,
+              maxWidth: "95%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setIsOpen(false)}
+              style={{
+                alignSelf: "flex-end",
+                marginBottom: 5,
+                marginRight: 5,
+              }}
+            >
+              <Icon name="close" size={20} color="#000" />
+            </TouchableOpacity>
+            <ThemedText style={{ fontSize: 8 }}>
+              {JSON.stringify(offer)}
+            </ThemedText>
+            <View
+              style={{
+                width: "100%",
+                height: 300,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#72BF78",
+              }}
+            >
+              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                Map Placeholder
+              </ThemedText>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

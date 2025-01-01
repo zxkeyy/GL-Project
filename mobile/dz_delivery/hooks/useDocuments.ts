@@ -31,7 +31,7 @@ interface DocumentResponse {
   reviewer_notes?: string;
   created_at: string;
 }
-// Simplified document upload function using new apiClient
+
 export const uploadDocument = async (
   documentType: string
 ): Promise<DocumentResponse> => {
@@ -45,7 +45,7 @@ export const uploadDocument = async (
       throw new Error("Document picking was canceled");
     }
     const file = result.assets[0];
-    // Use the new uploadFile method from apiClient
+
     return await apiClient.uploadFile<DocumentResponse>(
       "/auth/documents/",
       file,
