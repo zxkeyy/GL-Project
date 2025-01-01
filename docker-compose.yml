@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 services:
   backend:
     build: ./backend/dz_delivery
@@ -23,7 +23,7 @@ services:
       - /app/node_modules # Mount the container's node modules as a seperate module
 
   db:
-    image: postgres
+    image: postgres:latest 
     environment:
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: password
