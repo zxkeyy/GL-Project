@@ -274,7 +274,7 @@ class Delivery(TimeStampedModel):
 
     def __str__(self):
         return f"Delivery {self.id} - {self.package.tracking_number}"
-
+    @property
     def status(self):
         """Return the current status of the delivery."""
         return self.status_updates.first().status

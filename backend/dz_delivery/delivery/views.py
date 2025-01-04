@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Subquery, OuterRef
 from django.utils import timezone
 
 from users.permissions import IsAdminOrDriver
@@ -48,9 +48,22 @@ class DriverViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def current_deliveries(self, request, pk=None):
         driver = self.get_object()
+        latest_status_subquery = DeliveryStatus.objects.filter(
+            delivery=OuterRef('pk')
+        ).order_by('-created_at').values('status')[:1]
+
         deliveries = Delivery.objects.filter(
             driver=driver,
-            status__in=['ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+            id__in=Subquery(
+                DeliveryStatus.objects.filter(
+                    delivery=OuterRef('pk'),
+                    status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+                ).order_by('-created_at').values('delivery')[:1]
+            )
+        ).annotate(
+            latest_status=Subquery(latest_status_subquery)
+        ).filter(
+            latest_status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
         )
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
@@ -216,6 +229,13 @@ class DeliveryViewSet(viewsets.ModelViewSet):
             deliveries = self.queryset.all()
         else:
             deliveries = self.queryset.filter(driver__user=user)
+        serializer = DeliveryListSerializer(deliveries, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'])
+    def current_deliveries(self, request):
+        user = request.user
+        deliveries = self.queryset.filter(driver__user=user, status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT'])
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
 
