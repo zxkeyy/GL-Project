@@ -232,13 +232,6 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'])
-    def current_deliveries(self, request):
-        user = request.user
-        deliveries = self.queryset.filter(driver__user=user, status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT'])
-        serializer = DeliveryListSerializer(deliveries, many=True)
-        return Response(serializer.data)
-
     @action(detail=True, methods=['post'])
     def rate_delivery(self, request, pk=None):
         delivery = self.get_object()
