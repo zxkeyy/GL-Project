@@ -103,7 +103,7 @@ class DeliverySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Delivery
-        fields = ['id', 'package', 'driver', 'service_area',
+        fields = ['id', 'package', 'driver', 'service_area', 'status',
                  'base_fee', 'distance_fee', 'additional_fees',
                  'total_amount', 'estimated_pickup_time',
                  'estimated_delivery_time', 'actual_pickup_time',
@@ -131,7 +131,7 @@ class DeliveryListSerializer(DeliverySerializer):
     dropoff_address = AddressSerializer(read_only=True)
     
     class Meta(DeliverySerializer.Meta):
-        fields = ['id', 'package', 'driver',
+        fields = ['id', 'package', 'driver', 'status',
                  'base_fee', 'distance_fee', 'additional_fees',
                  'total_amount', 'pickup_address', 'dropoff_address', 'route_info', 'distance', 'service_area']
 

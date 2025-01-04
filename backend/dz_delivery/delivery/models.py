@@ -275,6 +275,10 @@ class Delivery(TimeStampedModel):
     def __str__(self):
         return f"Delivery {self.id} - {self.package.tracking_number}"
 
+    def status(self):
+        """Return the current status of the delivery."""
+        return self.status_updates.first().status
+
     @property
     def is_delayed(self):
         """Check if delivery is delayed."""
