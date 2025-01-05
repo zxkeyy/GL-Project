@@ -1,7 +1,7 @@
 import {
-    DarkTheme,
-    DefaultTheme,
-    ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Redirect, Stack } from "expo-router";
@@ -13,50 +13,42 @@ import "react-native-reanimated";
 import "@/i18n";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
-import "@/i18n";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { useAuth } from "@/hooks/useAuth";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    const { user, accessToken } = useAuth();
+  const { user, accessToken } = useAuth();
 
-    const colorScheme = useColorScheme();
-    const [loaded] = useFonts({
-        SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-        Sora: require("../assets/fonts/Sora-VariableFont_wght.ttf"),
-    });
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Sora: require("../assets/fonts/Sora-VariableFont_wght.ttf"),
+  });
 
-    useEffect(() => {
-        if (loaded) {
-            SplashScreen.hideAsync();
-        }
-    }, [loaded]);
-
-    if (!loaded) {
-        return null;
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
     }
+  }, [loaded]);
 
-    return (
-        <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-            <Stack screenOptions={{ headerShown: false }}>
-                {!accessToken ? (
-                    <Stack.Screen name="(welcome)/" />
-                ) : !user?.isActive ? (
-                    <Stack.Screen name="(verification)" />
-                ) : (
-                    <Stack.Screen name="(protected)" />
-                )}
-                <Stack.Screen
-                    name="+not-found"
-                    options={{ headerShown: true }}
-                />
-            </Stack>
-            <StatusBar style="auto" />
-        </ThemeProvider>
-    );
+  if (!loaded) {
+    return null;
+  }
+
+  return (
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        {!accessToken ? (
+          <Stack.Screen name="(welcome)/" />
+        ) : !user?.isActive ? (
+          <Stack.Screen name="(verification)" />
+        ) : (
+          <Stack.Screen name="(protected)" />
+        )}
+        <Stack.Screen name="+not-found" options={{ headerShown: true }} />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  );
 }
