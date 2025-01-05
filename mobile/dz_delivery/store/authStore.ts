@@ -5,6 +5,7 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber: string;
   isActive: boolean;
   isDriverVerified: boolean;
 }

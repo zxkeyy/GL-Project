@@ -32,6 +32,7 @@ class TokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # custom claims
         token['fullname'] = user.full_name
+        token['phone_number'] = user.phone_number
         token['is_active'] = user.is_active
         token['is_client_verified'] = user.is_client_verified
         token['is_driver_verified'] = user.is_driver_verified

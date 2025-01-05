@@ -17,23 +17,9 @@ export default function AuthLayout() {
         }}
       >
         <Stack.Screen
-          name="welcome-1"
+          name="register-phone"
           options={{
-            title: "Welcome",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="welcome-2"
-          options={{
-            title: "Welcome",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="auth"
-          options={{
-            title: "Log In or Sign Up",
+            title: "Verify your account",
             headerShown: false,
           }}
         />

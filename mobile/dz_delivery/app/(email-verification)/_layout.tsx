@@ -17,23 +17,16 @@ export default function AuthLayout() {
         }}
       >
         <Stack.Screen
-          name="welcome-1"
+          name="activate-email"
           options={{
-            title: "Welcome",
+            title: "Verify Email",
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="welcome-2"
+          name="activate-email-success"
           options={{
-            title: "Welcome",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="auth"
-          options={{
-            title: "Log In or Sign Up",
+            title: "Email Verified",
             headerShown: false,
           }}
         />

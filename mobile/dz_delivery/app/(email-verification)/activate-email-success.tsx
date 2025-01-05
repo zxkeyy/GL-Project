@@ -2,7 +2,6 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { BackgroundBlur } from "@/components/Signup-Login/BackgroundBlur";
 import { ThemedText } from "@/components/ThemedText";
 import { useAuth } from "@/hooks/useAuth";
-import useDocuments from "@/hooks/useDocuments";
 import { useTimer } from "@/hooks/useTimer";
 import { router } from "expo-router";
 import { use } from "i18next";
@@ -14,14 +13,11 @@ import {
   View,
   Image,
   TouchableOpacity,
-  TextInput,
 } from "react-native";
-import DocumentUpload from "./DocumentUpload";
 
-export default function DocumentSubmissionScreen() {
-  const [loaDing, setLoading] = useState(false);
+export default function ActivateEmailSuccessScreen() {
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const { documents } = useDocuments();
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -52,17 +48,49 @@ export default function DocumentSubmissionScreen() {
           </ThemedText>
           your account
         </ThemedText>
-
-        <View style={{ gap: 10 }}>
-          {documents?.map((document) => (
-            <DocumentUpload document={document} />
-          ))}
-        </View>
-
+        <Image
+          source={require("../../assets/images/box-illustration.png")}
+          style={{
+            width: 250,
+            height: 250,
+            alignSelf: "center",
+          }}
+        />
+        <ThemedText
+          style={{
+            fontSize: 18,
+            marginBottom: 24,
+            textAlign: "center",
+          }}
+        >
+          Email successfuly verified!
+        </ThemedText>
         <View style={{ marginTop: "auto" }}>
-          <ThemedText style={{ textAlign: "center" }}>
-            Please wait until all documents are verified.
-          </ThemedText>
+          <TouchableOpacity
+            style={{
+              backgroundColor: "#000",
+              height: 48,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              router.replace("/");
+            }}
+          >
+            <ThemedText
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                fontWeight: "600",
+              }}
+              onPress={() => {
+                router.replace("/");
+              }}
+            >
+              Continue
+            </ThemedText>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
