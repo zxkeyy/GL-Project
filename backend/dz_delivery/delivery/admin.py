@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Delivery, DeliveryStatus, Driver, Package, ServiceArea
+from .models import Address, Delivery, DeliveryStatus, Driver, Package, ServiceArea
 
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
@@ -13,6 +13,11 @@ class DriverAdmin(admin.ModelAdmin):
     def get_driver_name(self, obj):
         return f"{obj.user.get_full_name()}"
     get_driver_name.short_description = 'Driver'
+
+@admin.register(Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('street', 'city', 'state', 'postal_code')
+    search_fields = ('street', 'city', 'state', 'postal_code')
 
 @admin.register(ServiceArea)
 class ServiceAreaAdmin(admin.ModelAdmin):
@@ -54,7 +59,7 @@ class DeliveryStatusInline(admin.TabularInline):
 
 @admin.register(Delivery)
 class DeliveryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'get_tracking_number', 'driver', 'get_status', 'pickup_address', 'dropoff_address',
+    list_display = ('id', 'get_tracking_number', 'driver', 'status', 'pickup_address', 'dropoff_address',
                    'estimated_delivery_time', 'is_delayed')
     list_filter = ('package__status', 'driver')
     search_fields = ('package__tracking_number', 'driver__user__username')
@@ -64,25 +69,6 @@ class DeliveryAdmin(admin.ModelAdmin):
     def get_tracking_number(self, obj):
         return obj.package.tracking_number
     get_tracking_number.short_description = 'Tracking Number'
-
-    def get_status(self, obj):
-        status_colors = {
-            'REQUESTED': 'blue',
-            'ASSIGNED': 'purple',
-            'PICKED_UP': 'orange',
-            'IN_TRANSIT': 'yellow',
-            'ARRIVED': 'lightgreen',
-            'DELIVERED': 'green',
-            'FAILED': 'red',
-            'CANCELLED': 'gray'
-        }
-        color = status_colors.get(obj.package.status, 'black')
-        return format_html(
-            '<span style="color: {};">{}</span>',
-            color,
-            obj.package.status
-        )
-    get_status.short_description = 'Status'
 
 @admin.register(DeliveryStatus)
 class DeliveryStatusAdmin(admin.ModelAdmin):

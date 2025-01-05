@@ -32,10 +32,10 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - PYTHONUNBUFFERED=1
-      - REACT_NATIVE_PACKAGER_HOSTNAME=10.5.3.243 # Change this to your local machine's IP address
+      - REACT_NATIVE_PACKAGER_HOSTNAME=192.168.1.6 # Change this to your local machine's IP address
     volumes:
       - ./mobile/dz_delivery/:/opt/my-app:delegated
-      - /opt/my-app/node_modules
+      #- /opt/my-app/node_modules
     stdin_open: true
     tty: true
 

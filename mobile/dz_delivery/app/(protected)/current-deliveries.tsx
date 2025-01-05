@@ -1,3 +1,4 @@
+import ActiveDeliveryCard from "@/components/Home/ActiveDeliveryCard";
 import InstantOfferCard from "@/components/Home/InstantOfferCard";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
@@ -12,27 +13,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-const offers = [
-  {
-    id: 1,
-    offerName: "Offer Name",
-    offerDescription: "Lorem ipsum dolor sit amet",
-    price: 100,
-    pickupLocation: "Pickup Location",
-    dropoffLocation: "Dropoff Location",
-  },
-  {
-    id: 2,
-    offerName: "Offer Name",
-    offerDescription: "Lorem ipsum dolor sit amet",
-    price: 100,
-    pickupLocation: "Pickup Location",
-    dropoffLocation: "Dropoff Location",
-  },
-];
-
-export default function DeliveryScreen() {
-  const { deliveries } = useDeliveries();
+export default function CurrentDeliveriesScreen() {
+  const { currentDeliveries } = useDeliveries();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
@@ -70,44 +52,41 @@ export default function DeliveryScreen() {
         </View>
       </View>
 
-      {/* Search Bar */}
+      {/* Optimized Route */}
+
       <View
         style={{
           flexDirection: "row",
+          justifyContent: "space-between",
           alignItems: "center",
-          paddingHorizontal: 16,
-          marginBottom: 16,
+          padding: 16,
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            alignItems: "center",
-            backgroundColor: "#FFFFFF",
-            borderRadius: 8,
-            height: 45,
-            paddingHorizontal: 10,
-            marginRight: 17,
-            boxShadow: "0px 4px 26px 0px rgba(0, 0, 0, 0.10)",
-          }}
-        >
-          <TextInput
-            style={{
-              flex: 1,
-              marginLeft: 8,
-              fontSize: 13,
-              fontFamily: "Sora",
-            }}
-            placeholder="Search what to deliver"
-            placeholderTextColor={"#00000073"}
-          />
-          <Icon name="magnify" size={20} color="#8C8C8C" />
-        </View>
         <TouchableOpacity
           style={{
-            width: 48,
-            height: 45,
+            width: "70%",
+            height: 50,
+            backgroundColor: "#A0D68399",
+            paddingHorizontal: 0,
+            paddingVertical: 2,
+            borderRadius: 7,
+            borderWidth: 1,
+            borderColor: "#72BF78",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ThemedText
+            style={{ color: "#396A3D", fontWeight: "600", fontSize: 17 }}
+          >
+            See optimized route
+          </ThemedText>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            width: "20%",
+            height: 50,
             backgroundColor: "#FFFFFF",
             borderRadius: 8,
             justifyContent: "center",
@@ -119,44 +98,7 @@ export default function DeliveryScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Instant Offers */}
-      <View style={{ marginBottom: 20 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: 8,
-            paddingHorizontal: 16,
-          }}
-        >
-          <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
-            Instant offers
-          </ThemedText>
-          <TouchableOpacity>
-            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
-          </TouchableOpacity>
-        </View>
-        <View style={{ overflow: "visible" }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{
-              paddingLeft: 16,
-              paddingBottom: 40,
-              marginBottom: -20,
-              paddingTop: 24,
-              marginTop: -24,
-            }}
-          >
-            {offers.map((item) => (
-              <InstantOfferCard offer={item} key={item.id} />
-            ))}
-          </ScrollView>
-        </View>
-      </View>
-
-      {/* Offers You May Like */}
+      {/* Your current offers */}
       <View style={{ marginBottom: 24 }}>
         <View
           style={{
@@ -168,14 +110,11 @@ export default function DeliveryScreen() {
           }}
         >
           <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
-            Offers you may like
+            Your current offers
           </ThemedText>
-          <TouchableOpacity>
-            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
-          </TouchableOpacity>
         </View>
-        {deliveries.map((item) => (
-          <OfferCard offer={item} key={item.id} />
+        {currentDeliveries.map((item) => (
+          <ActiveDeliveryCard offer={item} key={item.id} />
         ))}
       </View>
     </ScrollView>

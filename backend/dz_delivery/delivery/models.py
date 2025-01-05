@@ -20,6 +20,26 @@ class TimeStampedModel(models.Model):
     class Meta:
         abstract = True
 
+
+class Address(models.Model):
+    """Model to store address information."""
+    street = models.CharField(_("Street Address"), max_length=255)
+    unit = models.CharField(_("Unit/Apt"), max_length=20, null=True, blank=True)
+    city = models.CharField(_("City"), max_length=100)
+    state = models.CharField(_("State"), max_length=100)
+    postal_code = models.CharField(_("Postal Code"), max_length=20)
+    building_type = models.CharField(_("Building Type"), max_length=50, null=True, blank=True)
+
+    latitude = models.FloatField(_("Latitude"), null=True, blank=True)
+    longitude = models.FloatField(_("Longitude"), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Address")
+        verbose_name_plural = _("Addresses")
+    
+    def __str__(self):
+        return f"{self.street}, {self.city}, {self.state} {self.postal_code}"
+
 class ServiceArea(models.Model):
     """Model to define service areas with pricing."""
     name = models.CharField(_("Area Name"), max_length=100)
@@ -126,9 +146,9 @@ class Package(TimeStampedModel):
         validators=[phone_regex]
     )
     recipient_email = models.EmailField(_("Recipient Email"), null=True, blank=True)
-    pickup_address = models.JSONField(_("Pickup Address"))
-    delivery_address = models.JSONField(_("Delivery Address"))
-    current_address = models.JSONField(_("Current Address"), null=True, blank=True)
+    pickup_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='pickup_packages')
+    delivery_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='delivery_packages')
+    current_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='current_packages', null=True, blank=True)
     status = models.CharField(
         _("Status"),
         max_length=20,
@@ -220,20 +240,27 @@ class Delivery(TimeStampedModel):
         help_text=_("JSON object containing fee type and amount"),
         blank=True
     )
-    total_amount = models.DecimalField(_("Total Amount"), max_digits=10, decimal_places=2)
+    total_amount = models.DecimalField(_("Total Amount"), max_digits=10, decimal_places=2, default=0.00)
+
+    pickup_window_start = models.DateTimeField(_("Pickup Window Start"), null=True, blank=True)
+    pickup_window_end = models.DateTimeField(_("Pickup Window End"), null=True, blank=True)
+    dropoff_window_start = models.DateTimeField(_("Dropoff Window Start"), null=True, blank=True)
+    dropoff_window_end = models.DateTimeField(_("Dropoff Window End"), null=True, blank=True)
+
+    estimated_delivery_duration = models.DurationField(_("Estimated Delivery Duration"), null=True, blank=True)
     estimated_pickup_time = models.DateTimeField(_("Estimated Pickup"), null=True, blank=True)
     estimated_delivery_time = models.DateTimeField(_("Estimated Delivery"), null=True, blank=True)
     actual_pickup_time = models.DateTimeField(_("Actual Pickup"), null=True, blank=True)
     actual_delivery_time = models.DateTimeField(_("Actual Delivery"), null=True, blank=True)
-    pickup_address = models.JSONField(_("Pickup Location"), null=True, blank=True)
-    dropoff_address = models.JSONField(_("Dropoff Location"), blank=True)
+    pickup_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='pickup_deliveries')
+    dropoff_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='dropoff_deliveries')
     route_info = models.JSONField(_("Route Information"), null=True, blank=True)
-    distance = models.FloatField(_("Distance (km)"), validators=[MinValueValidator(0.1)])
-    driver_rating = models.IntegerField(
+    distance = models.FloatField(_("Distance (km)"), validators=[MinValueValidator(0.1)], default=0.0)
+    driver_rating = models.FloatField(
         _("Driver Rating"),
         null=True,
         blank=True,
-        validators=[MinValueValidator(1), MaxValueValidator(5)]
+        validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
     )
     driver_feedback = models.TextField(_("Driver Feedback"), blank=True)
 
@@ -247,6 +274,10 @@ class Delivery(TimeStampedModel):
 
     def __str__(self):
         return f"Delivery {self.id} - {self.package.tracking_number}"
+    @property
+    def status(self):
+        """Return the current status of the delivery."""
+        return self.status_updates.first().status
 
     @property
     def is_delayed(self):
@@ -271,7 +302,7 @@ class DeliveryStatus(TimeStampedModel):
         related_name='status_updates'
     )
     status = models.CharField(_("Status"), max_length=20, choices=Package.STATUS_CHOICES)
-    location = models.JSONField(_("Location"), null=True, blank=True)
+    location = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='status_updates', null=True, blank=True)
     notes = models.TextField(_("Status Notes"), blank=True)
     updated_by = models.ForeignKey(
         User,

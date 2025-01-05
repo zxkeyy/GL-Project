@@ -3,7 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
 from users.serializers import UserSerializer
-from .models import Delivery, DeliveryStatus, Driver, Package, ServiceArea
+from .models import Address, Delivery, DeliveryStatus, Driver, Package, ServiceArea
 
 class ServiceAreaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,9 +33,18 @@ class DriverSerializer(serializers.ModelSerializer):
         return driver
 
 
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ['unit', 'building_type', 'street', 'city', 'state', 'postal_code', 'latitude', 'longitude']
+        read_only_fields = []
+
 class PackageSerializer(serializers.ModelSerializer):
     delivery_progress = serializers.IntegerField(read_only=True)
     sender = UserSerializer(read_only=True)
+    pickup_address = AddressSerializer()
+    delivery_address = AddressSerializer()
+    current_address = AddressSerializer(read_only=True)
     
     class Meta:
         model = Package
@@ -60,7 +69,15 @@ class PackageSerializer(serializers.ModelSerializer):
         return random.randint(100000, 999999)
 
 
+class PackageListSerializer(PackageSerializer):
+    sender = serializers.PrimaryKeyRelatedField(read_only=True)
+    
+    class Meta(PackageSerializer.Meta):
+        fields = ['id', 'recipient_name', 'recipient_phone', 'weight', 'dimensions', 'is_fragile', 'requires_signature', 'notes', ]
+
+
 class PackageTrackingSerializer(serializers.ModelSerializer):
+    current_address = AddressSerializer(read_only=True)
     class Meta:
         model = Package
         fields = ['tracking_number', 'status', 'current_address', 'delivery_progress']
@@ -68,6 +85,7 @@ class PackageTrackingSerializer(serializers.ModelSerializer):
 
 
 class DeliveryStatusSerializer(serializers.ModelSerializer):
+    location = AddressSerializer()
     class Meta:
         model = DeliveryStatus
         fields = ['id', 'delivery', 'status', 'location', 
@@ -80,10 +98,12 @@ class DeliverySerializer(serializers.ModelSerializer):
     status_updates = DeliveryStatusSerializer(many=True, read_only=True)
     is_delayed = serializers.BooleanField(read_only=True)
     delivery_duration = serializers.DurationField(read_only=True)
+    pickup_address = AddressSerializer()
+    dropoff_address = AddressSerializer()
     
     class Meta:
         model = Delivery
-        fields = ['id', 'package', 'driver', 'service_area',
+        fields = ['id', 'package', 'driver', 'service_area', 'status',
                  'base_fee', 'distance_fee', 'additional_fees',
                  'total_amount', 'estimated_pickup_time',
                  'estimated_delivery_time', 'actual_pickup_time',
@@ -104,12 +124,16 @@ class DeliverySerializer(serializers.ModelSerializer):
 
 
 class DeliveryListSerializer(DeliverySerializer):
-    package = serializers.PrimaryKeyRelatedField(read_only=True)
+    package = PackageListSerializer(read_only=True)
     driver = serializers.PrimaryKeyRelatedField(read_only=True)
+    status_updates = DeliveryStatusSerializer(many=True, read_only=True)
+    pickup_address = AddressSerializer(read_only=True)
+    dropoff_address = AddressSerializer(read_only=True)
     
     class Meta(DeliverySerializer.Meta):
-        fields = ['id', 'package', 'driver', 
-                 'estimated_delivery_time', 'is_delayed']
+        fields = ['id', 'package', 'driver', 'status',
+                 'base_fee', 'distance_fee', 'additional_fees',
+                 'total_amount', 'pickup_address', 'dropoff_address', 'route_info', 'distance', 'service_area']
 
 
 class EmptySerializer(serializers.Serializer):
