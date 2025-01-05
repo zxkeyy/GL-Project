@@ -146,7 +146,7 @@ class DeliveryViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return DeliveryListSerializer
-        if self.action == 'accept':
+        if self.action == 'accept' or self.action == 'verify_delivery':
             return EmptySerializer
         if self.action == 'update_status':
             return DeliveryStatusSerializer

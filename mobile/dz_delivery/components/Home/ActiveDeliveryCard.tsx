@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Modal, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Modal,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
@@ -8,12 +15,27 @@ interface Props {
   offer: Delivery;
 }
 
-const OfferCard = ({ offer }: Props) => {
+const ActiveDeliveryCard = ({ offer }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { acceptDelivery } = useDeliveries();
+  const { updateStatus, verifyDelivery } = useDeliveries();
+  const [code, setCode] = useState("");
 
-  const handleAcceptOffer = () => {
-    acceptDelivery(offer.id);
+  const handleCancelOffer = () => {
+    updateStatus(offer.id, "CANCELED", null);
+  };
+
+  const handleStatusUpdate = () => {
+    if (offer.status === "ASSIGNED") {
+      updateStatus(offer.id, "PICKED_UP", null);
+    } else if (offer.status === "PICKED_UP") {
+      updateStatus(offer.id, "IN_TRANSIT", null);
+    } else if (offer.status === "IN_TRANSIT") {
+      updateStatus(offer.id, "ARRIVED", null);
+    }
+  };
+
+  const completeDelivery = () => {
+    verifyDelivery(offer.id, code);
   };
 
   return (
@@ -111,21 +133,21 @@ const OfferCard = ({ offer }: Props) => {
           <TouchableOpacity
             style={{
               width: "45%",
-              backgroundColor: "#A0D68399",
+              backgroundColor: "#FC41255E",
               paddingHorizontal: 0,
               paddingVertical: 2,
               borderRadius: 4,
               borderWidth: 1,
-              borderColor: "#72BF78",
+              borderColor: "#FF3B30",
               flexDirection: "row",
               justifyContent: "center",
             }}
-            onPress={handleAcceptOffer}
+            onPress={handleCancelOffer}
           >
             <ThemedText
-              style={{ color: "#396A3D", fontWeight: "600", fontSize: 12 }}
+              style={{ color: "#FF3B30", fontWeight: "600", fontSize: 12 }}
             >
-              Accept offer
+              Cancel offer
             </ThemedText>
           </TouchableOpacity>
         </View>
@@ -144,13 +166,14 @@ const OfferCard = ({ offer }: Props) => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <View
+          <ScrollView
             style={{
               backgroundColor: "white",
               borderRadius: 10,
               padding: 10,
               minWidth: 200,
               maxWidth: "95%",
+              maxHeight: "90%",
             }}
           >
             <TouchableOpacity
@@ -179,11 +202,60 @@ const OfferCard = ({ offer }: Props) => {
                 Map Placeholder
               </ThemedText>
             </View>
-          </View>
+            <TouchableOpacity
+              onPress={handleStatusUpdate}
+              style={{
+                backgroundColor: "#FC41255E",
+                paddingHorizontal: 0,
+                paddingVertical: 2,
+                borderRadius: 4,
+                borderWidth: 1,
+                borderColor: "#FF3B30",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                Update status
+              </ThemedText>
+            </TouchableOpacity>
+            <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+              Delivery code
+            </ThemedText>
+            <TextInput
+              style={{
+                height: 40,
+                borderColor: "gray",
+                borderWidth: 1,
+                borderRadius: 4,
+                padding: 8,
+                marginVertical: 8,
+              }}
+              onChangeText={setCode}
+              value={code}
+            />
+            <TouchableOpacity
+              onPress={completeDelivery}
+              style={{
+                backgroundColor: "#72BF78",
+                paddingHorizontal: 0,
+                paddingVertical: 2,
+                borderRadius: 4,
+                borderWidth: 1,
+                borderColor: "#72BF78",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                Complete delivery {code}
+              </ThemedText>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
     </View>
   );
 };
 
-export default OfferCard;
+export default ActiveDeliveryCard;

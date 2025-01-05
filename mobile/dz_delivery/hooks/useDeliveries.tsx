@@ -1,5 +1,6 @@
 import apiClient from "@/services/apiClient";
 import { useEffect, useState } from "react";
+import { useAuth } from "./useAuth";
 
 export interface Address {
   unit: string;
@@ -29,6 +30,7 @@ export interface Delivery {
     notes: string;
   };
   driver: number;
+  status: string;
   base_fee: number;
   distance_fee: number;
   additional_fees: any;
@@ -42,6 +44,8 @@ export interface Delivery {
 
 const useDeliveries = () => {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+  const [currentDeliveries, setCurrentDeliveries] = useState<Delivery[]>([]);
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
 
   const acceptDelivery = async (deliveryId: number) => {
@@ -53,6 +57,73 @@ const useDeliveries = () => {
       const data = response.data;
     } catch (error) {
       console.error("Accept delivery error:", error);
+    } finally {
+      setLoading(false);
+      fetchDeliveries();
+      fetchCurrentDeliveries();
+    }
+  };
+
+  const cancelDelivery = async (deliveryId: number) => {};
+
+  const updateStatus = async (
+    deliveryId: number,
+    status: string,
+    location: Address | null
+  ) => {
+    setLoading(true);
+    try {
+      const response = await apiClient.post(
+        `/delivery/deliveries/${deliveryId}/update_status/`,
+        {
+          status,
+          location,
+        }
+      );
+      const data = response.data;
+    } catch (error) {
+      console.error("Update delivery status error:", error);
+    } finally {
+      setLoading(false);
+      fetchCurrentDeliveries();
+    }
+  };
+
+  const verifyDelivery = async (
+    deliveryId: number,
+    verification_code: string
+  ) => {
+    setLoading(true);
+    try {
+      const response = await apiClient.post(
+        `/delivery/deliveries/${deliveryId}/verify_delivery/`,
+        {
+          verification_code,
+        }
+      );
+      const data = response.data;
+    } catch (error) {
+      console.error("Verify delivery error:", error);
+    } finally {
+      setLoading(false);
+      fetchCurrentDeliveries();
+    }
+  };
+
+  const fetchCurrentDeliveries = async () => {
+    setLoading(true);
+    // Fetch the deliveries
+    try {
+      if (!user) {
+        return;
+      }
+      const response = await apiClient.get(
+        `/delivery/drivers/${user.id}/current_deliveries/`
+      );
+      const data = response.data;
+      setCurrentDeliveries(data);
+    } catch (error) {
+      console.error("Fetch current deliveries error:", error);
     } finally {
       setLoading(false);
     }
@@ -73,8 +144,17 @@ const useDeliveries = () => {
   };
 
   useEffect(() => {
+    fetchCurrentDeliveries();
     fetchDeliveries();
   }, []);
-  return { deliveries, loading, acceptDelivery };
+
+  return {
+    deliveries,
+    currentDeliveries,
+    loading,
+    acceptDelivery,
+    updateStatus,
+    verifyDelivery,
+  };
 };
 export default useDeliveries;
