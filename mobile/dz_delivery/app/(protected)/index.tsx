@@ -1,53 +1,183 @@
-import { Image, StyleSheet, Platform, TouchableOpacity } from "react-native";
-
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import InstantOfferCard from "@/components/Home/InstantOfferCard";
+import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { Link } from "expo-router";
-import useAuthStore from "@/store/authStore";
-import { useAuth } from "@/hooks/useAuth";
-import { StackActions } from "@react-navigation/native";
+import useDeliveries from "@/hooks/useDeliveries";
+import React from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-export default function HomeScreen() {
-    const { user, logout } = useAuth();
+const offers = [
+  {
+    id: 1,
+    offerName: "Offer Name",
+    offerDescription: "Lorem ipsum dolor sit amet",
+    price: 100,
+    pickupLocation: "Pickup Location",
+    dropoffLocation: "Dropoff Location",
+  },
+  {
+    id: 2,
+    offerName: "Offer Name",
+    offerDescription: "Lorem ipsum dolor sit amet",
+    price: 100,
+    pickupLocation: "Pickup Location",
+    dropoffLocation: "Dropoff Location",
+  },
+];
 
-    return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-            headerImage={
-                <Image
-                    source={require("@/assets/images/partial-react-logo.png")}
-                    style={styles.reactLogo}
-                />
-            }
+export default function DeliveryScreen() {
+  const { deliveries } = useDeliveries();
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
+      {/* Header */}
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: 16,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Icon name="map-marker-outline" size={24} color="#000" />
+          <ThemedText
+            style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 4 }}
+          >
+            Medea, Algeria
+          </ThemedText>
+          <Icon name="chevron-down" size={24} color="#000" />
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+          <TouchableOpacity style={{ marginLeft: 0 }}>
+            <Icon name="home-variant-outline" size={23} color="#22C55E" />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginLeft: 8 }}>
+            <Icon name="account-outline" size={23} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginLeft: 8 }}>
+            <Icon name="package-variant-closed" size={23} color="#000" />
+          </TouchableOpacity>
+          <TouchableOpacity style={{ marginLeft: 8 }}>
+            <Icon name="bell-outline" size={23} color="#000" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Search Bar */}
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 16,
+          marginBottom: 16,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#FFFFFF",
+            borderRadius: 8,
+            height: 45,
+            paddingHorizontal: 10,
+            marginRight: 17,
+            boxShadow: "0px 4px 26px 0px rgba(0, 0, 0, 0.10)",
+          }}
         >
-            <ThemedText>
-                Welcome to DZ Delivery!{" "}
-                {user ? `User: ${user.fullName}, ${user.email}` : ""}
-            </ThemedText>
-            <ThemedView style={styles.titleContainer}>
-                <Link href="/auth">
-                    <ThemedText type="link">login or signup</ThemedText>
-                </Link>
-            </ThemedView>
-            <TouchableOpacity onPress={logout}>
-                <ThemedText type="link">Logout</ThemedText>
-            </TouchableOpacity>
-        </ParallaxScrollView>
-    );
-}
+          <TextInput
+            style={{
+              flex: 1,
+              marginLeft: 8,
+              fontSize: 13,
+              fontFamily: "Sora",
+            }}
+            placeholder="Search what to deliver"
+            placeholderTextColor={"#00000073"}
+          />
+          <Icon name="magnify" size={20} color="#8C8C8C" />
+        </View>
+        <TouchableOpacity
+          style={{
+            width: 48,
+            height: 45,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 8,
+            justifyContent: "center",
+            alignItems: "center",
+            boxShadow: "0px 4px 26px 0px rgba(0, 0, 0, 0.16)",
+          }}
+        >
+          <Icon name="map-outline" size={30} color="#000" />
+        </TouchableOpacity>
+      </View>
 
-const styles = StyleSheet.create({
-    titleContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 8,
-    },
-    reactLogo: {
-        height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: "absolute",
-    },
-});
+      {/* Instant Offers */}
+      <View style={{ marginBottom: 20 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+            paddingHorizontal: 16,
+          }}
+        >
+          <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
+            Instant offers
+          </ThemedText>
+          <TouchableOpacity>
+            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
+          </TouchableOpacity>
+        </View>
+        <View style={{ overflow: "visible" }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={{
+              paddingLeft: 16,
+              paddingBottom: 40,
+              marginBottom: -20,
+              paddingTop: 24,
+              marginTop: -24,
+            }}
+          >
+            {offers.map((item) => (
+              <InstantOfferCard offer={item} key={item.id} />
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+
+      {/* Offers You May Like */}
+      <View style={{ marginBottom: 24 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 12,
+            paddingHorizontal: 16,
+          }}
+        >
+          <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
+            Offers you may like
+          </ThemedText>
+          <TouchableOpacity>
+            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
+          </TouchableOpacity>
+        </View>
+        {deliveries.map((item) => (
+          <OfferCard offer={item} key={item.id} />
+        ))}
+      </View>
+    </ScrollView>
+  );
+}

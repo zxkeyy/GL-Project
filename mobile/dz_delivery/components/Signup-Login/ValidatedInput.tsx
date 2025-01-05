@@ -8,6 +8,7 @@ interface ValidatedInputProps {
   onChangeText: (text: string) => void;
   placeholder: string;
   secureTextEntry?: boolean;
+  phonePrefix?: string;
   keyboardType?: "default" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   error?: string | null;
@@ -18,6 +19,7 @@ export function ValidatedInput({
   onChangeText,
   placeholder,
   secureTextEntry = false,
+  phonePrefix,
   keyboardType = "default",
   autoCapitalize = "none",
   error,
@@ -44,6 +46,9 @@ export function ValidatedInput({
           paddingHorizontal: 12,
         }}
       >
+        {phonePrefix && (
+          <ThemedText style={{ marginRight: 8 }}>{phonePrefix}</ThemedText>
+        )}
         <TextInput
           style={{
             flex: 1,

@@ -13,6 +13,9 @@ import "react-native-reanimated";
 import "@/i18n";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { useAuth } from "@/hooks/useAuth";
+import "@/i18n";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { useAuth } from "@/hooks/useAuth";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -35,8 +38,6 @@ export default function RootLayout() {
     if (!loaded) {
         return null;
     }
-
-    console.log("RootLayout", { user, accessToken });
 
     return (
         <ThemeProvider

@@ -49,8 +49,10 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'djoser',
+    'django_filters',
     #
     'users',
+    'delivery',
 ]
 
 MIDDLEWARE = [
@@ -173,7 +175,7 @@ DJOSER = {
         'current_user': 'users.serializers.UserSerializer',
     },
     'EMAIL': {
-        'activation': 'djoser.email.ActivationEmail',
+        'activation': 'users.email.CustomActivationEmail',
     },
 }
 
@@ -205,3 +207,6 @@ EMAIL_HOST_USER= env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@yourdomain.com')
 SERVER_EMAIL = env('SERVER_EMAIL', default='admin@yourdomain.com')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
