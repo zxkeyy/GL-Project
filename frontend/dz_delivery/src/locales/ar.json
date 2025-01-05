@@ -1,0 +1,14 @@
+{
+  "welcome": "مرحبًا بك في تطبيقنا!",
+  "greeting": "مرحبًا، {{name}}",
+  "description": "هذا تطبيق React متعدد اللغات.",
+  "get_started": "ابدأ",
+  "buttons": {
+    "submit": "إرسال",
+    "cancel": "إلغاء"
+  },
+  "errors": {
+    "required": "هذا الحقل مطلوب"
+  },
+  "direction": "rtl"
+}

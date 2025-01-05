@@ -35,7 +35,6 @@ DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +47,7 @@ INSTALLED_APPS = [
     #
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
     'djoser',
     #
     'users',
@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,9 +142,14 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8081',
+    'http://localhost:5173',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.JWTInactiveUserAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -152,12 +158,11 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 DJOSER = {
-    'USER_CREATE_PASSWORD_RETYPE': True,
-    'SET_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': True,
     'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
@@ -178,6 +183,14 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
     'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
     'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
+    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.TokenObtainPairSerializer',
+    'USER_AUTHENTICATION_RULE': 'users.authentication.inactive_user_authentication_rule',
+}
+
+PHONE_VERIFICATION = {
+    'MESSAGE':("Welcome to Blitz, Your verification code is: {code}"),
+    'TOKEN_LENGTH': 6,
+    'CODE_EXPIRATION_TIME': 300,
 }
 
 AUTH_USER_MODEL = 'users.User'
