@@ -1,10 +1,8 @@
-
 import { Container } from "@mui/material";
 import { Button } from "./components/ui/button";
 import { Card } from "./components/ui/card";
 import { BarChart, LineChart } from "./components/charts";
 import { useTranslation } from "react-i18next";
-
 
 function App() {
   const { t, i18n } = useTranslation();

@@ -12,9 +12,9 @@ const router = createBrowserRouter([
     errorElement: <div>404</div>,
     children: [
       { path: "/", element: <App /> },
-      {path:"/package-management", element: <PackageManagement />,},
-      {path:"/allocation", element: <Allocation />,},
-      {path:"/prediction", element: <StockPrediction />,}
+      { path: "/package-management", element: <PackageManagement /> },
+      { path: "/allocation", element: <Allocation /> },
+      { path: "/prediction", element: <StockPrediction /> },
     ],
   },
 ]);
