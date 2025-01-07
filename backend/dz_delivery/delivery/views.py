@@ -57,13 +57,13 @@ class DriverViewSet(viewsets.ModelViewSet):
             id__in=Subquery(
                 DeliveryStatus.objects.filter(
                     delivery=OuterRef('pk'),
-                    status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+                    status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT', 'ARRIVED']
                 ).order_by('-created_at').values('delivery')[:1]
             )
         ).annotate(
             latest_status=Subquery(latest_status_subquery)
         ).filter(
-            latest_status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+            latest_status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT', 'ARRIVED']
         )
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
