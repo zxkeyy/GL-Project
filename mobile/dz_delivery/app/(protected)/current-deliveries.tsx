@@ -1,8 +1,11 @@
 import ActiveDeliveryCard from "@/components/Home/ActiveDeliveryCard";
 import InstantOfferCard from "@/components/Home/InstantOfferCard";
+import MapModal from "@/components/Home/MapModal";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
 import useDeliveries from "@/hooks/useDeliveries";
+import useLocation from "@/hooks/useLocation";
+import { router } from "expo-router";
 import React from "react";
 import {
   View,
@@ -12,6 +15,55 @@ import {
   ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+const offers = [
+  {
+    id: 1,
+    package: {
+      id: 1,
+      recipient_name: "dd",
+      recipient_phone: "1234567890",
+      weight: 2.0,
+      dimensions: {
+        width: 1,
+        height: 1,
+        length: 1,
+      },
+      is_fragile: true,
+      requires_signature: true,
+      notes: "fast",
+    },
+    driver: 1,
+    status: "IN_TRANSIT",
+    base_fee: 1.0,
+    distance_fee: 1.0,
+    additional_fees: {},
+    total_amount: 2.0,
+    pickup_address: {
+      unit: null,
+      building_type: null,
+      street: "estin",
+      city: "amizour",
+      state: "bejaia",
+      postal_code: "69",
+      latitude: 36.6123,
+      longitude: 4.3523,
+    },
+    dropoff_address: {
+      unit: null,
+      building_type: null,
+      street: "estin",
+      city: "amizour",
+      state: "bejaia",
+      postal_code: "69",
+      latitude: 36.7123,
+      longitude: 4.7523,
+    },
+    route_info: {},
+    distance: 3.0,
+    service_area: 1,
+  },
+];
 
 export default function CurrentDeliveriesScreen() {
   const { currentDeliveries } = useDeliveries();
@@ -25,6 +77,7 @@ export default function CurrentDeliveriesScreen() {
           justifyContent: "space-between",
           alignItems: "center",
           padding: 16,
+          marginTop: 20,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -37,14 +90,17 @@ export default function CurrentDeliveriesScreen() {
           <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <TouchableOpacity style={{ marginLeft: 0 }}>
-            <Icon name="home-variant-outline" size={23} color="#22C55E" />
+          <TouchableOpacity
+            style={{ marginLeft: 0 }}
+            onPress={() => router.replace("/")}
+          >
+            <Icon name="home-variant-outline" size={23} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginLeft: 8 }}>
             <Icon name="account-outline" size={23} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginLeft: 8 }}>
-            <Icon name="package-variant-closed" size={23} color="#000" />
+            <Icon name="package-variant-closed" size={23} color="#22C55E" />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginLeft: 8 }}>
             <Icon name="bell-outline" size={23} color="#000" />
@@ -64,8 +120,8 @@ export default function CurrentDeliveriesScreen() {
       >
         <TouchableOpacity
           style={{
-            width: "70%",
-            height: 50,
+            width: "80%",
+            height: 45,
             backgroundColor: "#A0D68399",
             paddingHorizontal: 0,
             paddingVertical: 2,
@@ -83,19 +139,7 @@ export default function CurrentDeliveriesScreen() {
             See optimized route
           </ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            width: "20%",
-            height: 50,
-            backgroundColor: "#FFFFFF",
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: "0px 4px 26px 0px rgba(0, 0, 0, 0.16)",
-          }}
-        >
-          <Icon name="map-outline" size={30} color="#000" />
-        </TouchableOpacity>
+        <MapModal />
       </View>
 
       {/* Your current offers */}
@@ -116,6 +160,7 @@ export default function CurrentDeliveriesScreen() {
         {currentDeliveries.map((item) => (
           <ActiveDeliveryCard offer={item} key={item.id} />
         ))}
+        <ActiveDeliveryCard offer={offers[0]} />
       </View>
     </ScrollView>
   );

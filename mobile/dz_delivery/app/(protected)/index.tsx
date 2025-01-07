@@ -1,7 +1,9 @@
 import InstantOfferCard from "@/components/Home/InstantOfferCard";
+import MapModal from "@/components/Home/MapModal";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
 import useDeliveries from "@/hooks/useDeliveries";
+import { router } from "expo-router";
 import React from "react";
 import {
   View,
@@ -15,19 +17,49 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const offers = [
   {
     id: 1,
-    offerName: "Offer Name",
-    offerDescription: "Lorem ipsum dolor sit amet",
-    price: 100,
-    pickupLocation: "Pickup Location",
-    dropoffLocation: "Dropoff Location",
-  },
-  {
-    id: 2,
-    offerName: "Offer Name",
-    offerDescription: "Lorem ipsum dolor sit amet",
-    price: 100,
-    pickupLocation: "Pickup Location",
-    dropoffLocation: "Dropoff Location",
+    package: {
+      id: 1,
+      recipient_name: "dd",
+      recipient_phone: "1234567890",
+      weight: 2.0,
+      dimensions: {
+        width: 1,
+        height: 1,
+        length: 1,
+      },
+      is_fragile: true,
+      requires_signature: true,
+      notes: "fast",
+    },
+    driver: 1,
+    status: "IN_TRANSIT",
+    base_fee: 1.0,
+    distance_fee: 1.0,
+    additional_fees: {},
+    total_amount: 2.0,
+    pickup_address: {
+      unit: null,
+      building_type: null,
+      street: "estin",
+      city: "amizour",
+      state: "bejaia",
+      postal_code: "69",
+      latitude: 36.6123,
+      longitude: 4.3523,
+    },
+    dropoff_address: {
+      unit: null,
+      building_type: null,
+      street: "estin",
+      city: "amizour",
+      state: "bejaia",
+      postal_code: "69",
+      latitude: 36.7123,
+      longitude: 4.7523,
+    },
+    route_info: {},
+    distance: 3.0,
+    service_area: 1,
   },
 ];
 
@@ -43,6 +75,7 @@ export default function DeliveryScreen() {
           justifyContent: "space-between",
           alignItems: "center",
           padding: 16,
+          marginTop: 20,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -61,7 +94,10 @@ export default function DeliveryScreen() {
           <TouchableOpacity style={{ marginLeft: 8 }}>
             <Icon name="account-outline" size={23} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 8 }}
+            onPress={() => router.replace("/current-deliveries")}
+          >
             <Icon name="package-variant-closed" size={23} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginLeft: 8 }}>
@@ -104,19 +140,7 @@ export default function DeliveryScreen() {
           />
           <Icon name="magnify" size={20} color="#8C8C8C" />
         </View>
-        <TouchableOpacity
-          style={{
-            width: 48,
-            height: 45,
-            backgroundColor: "#FFFFFF",
-            borderRadius: 8,
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: "0px 4px 26px 0px rgba(0, 0, 0, 0.16)",
-          }}
-        >
-          <Icon name="map-outline" size={30} color="#000" />
-        </TouchableOpacity>
+        <MapModal />
       </View>
 
       {/* Instant Offers */}
@@ -177,6 +201,7 @@ export default function DeliveryScreen() {
         {deliveries.map((item) => (
           <OfferCard offer={item} key={item.id} />
         ))}
+        <OfferCard offer={offers[0]} />
       </View>
     </ScrollView>
   );

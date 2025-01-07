@@ -13,21 +13,18 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
   const { user, accessToken, loading } = useAuth();
 
-  if (!loading && !accessToken) {
-    return <Redirect href="/(auth)/welcome-1" />;
-  }
-
-  if (!user?.isActive) {
-    return <Redirect href="/(email-verification)/activate-email" />;
-  }
-
-  if (!user?.phoneNumber) {
-    return <Redirect href="/(phone-verification)/register-phone" />;
-  }
-
-  if (!user?.isDriverVerified) {
-    return <Redirect href="/(document-verification)/document-submission" />;
-  }
+  // if (!loading && !accessToken) {
+  //   return <Redirect href="/(auth)/welcome-1" />;
+  // }
+  // if (!user?.isActive) {
+  //   return <Redirect href="/(email-verification)/activate-email" />;
+  // }
+  // if (!user?.phoneNumber) {
+  //   return <Redirect href="/(phone-verification)/register-phone" />;
+  // }
+  // if (!user?.isDriverVerified) {
+  //   return <Redirect href="/(document-verification)/document-submission" />;
+  // }
 
   return (
     <Tabs
