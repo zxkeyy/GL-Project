@@ -2,18 +2,10 @@ import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
-interface OfferTemp {
-  id: number;
-  offerName: string;
-  offerDescription: string;
-  price: number;
-  pickupLocation: string;
-  dropoffLocation: string;
-}
+import { Delivery } from "@/hooks/useDeliveries";
 
 interface Props {
-  offer: OfferTemp;
+  offer: Delivery;
 }
 
 const InstantOfferCard = ({ offer }: Props) => {
@@ -48,7 +40,7 @@ const InstantOfferCard = ({ offer }: Props) => {
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Icon name="map-marker-outline" size={12} color="#72BF78" />
             <ThemedText style={{ fontSize: 13 }}>
-              {offer.dropoffLocation}
+              {offer.dropoff_address.street}
             </ThemedText>
           </View>
 

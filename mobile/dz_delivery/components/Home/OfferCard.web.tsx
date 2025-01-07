@@ -3,7 +3,6 @@ import { Modal, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
-import MapView, { Marker } from "react-native-maps";
 
 interface Props {
   offer: Delivery;
@@ -167,31 +166,19 @@ const OfferCard = ({ offer }: Props) => {
             <ThemedText style={{ fontSize: 8 }}>
               {JSON.stringify(offer)}
             </ThemedText>
-            <MapView
-              style={{ height: 300 }}
-              showsUserLocation={true}
-              initialRegion={{
-                latitude: offer.pickup_address.latitude || 0,
-                longitude: offer.pickup_address.longitude || 0,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.0,
+            <View
+              style={{
+                width: "100%",
+                height: 300,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#72BF78",
               }}
             >
-              <Marker
-                coordinate={{
-                  latitude: offer.pickup_address.latitude || 0,
-                  longitude: offer.pickup_address.longitude || 0,
-                }}
-                title="PickUp Location"
-              />
-              <Marker
-                coordinate={{
-                  latitude: offer.dropoff_address.latitude || 0,
-                  longitude: offer.dropoff_address.longitude || 0,
-                }}
-                title="DropOff Location"
-              />
-            </MapView>
+              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                Map Placeholder
+              </ThemedText>
+            </View>
           </View>
         </View>
       </Modal>

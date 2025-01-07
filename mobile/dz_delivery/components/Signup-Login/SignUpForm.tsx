@@ -31,6 +31,7 @@ export function SignUpForm({
           lineHeight: 48,
           fontWeight: "bold",
           marginTop: 60,
+          paddingTop: 8,
           marginBottom: 20,
           paddingLeft: 20,
         }}

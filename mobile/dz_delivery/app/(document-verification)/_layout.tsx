@@ -17,28 +17,7 @@ export default function AuthLayout() {
         }}
       >
         <Stack.Screen
-          name="activate-email"
-          options={{
-            title: "Verify Email",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="activate-email-success"
-          options={{
-            title: "Email Verified",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
           name="document-submission"
-          options={{
-            title: "Verify your account",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="register-phone"
           options={{
             title: "Verify your account",
             headerShown: false,

@@ -8,6 +8,7 @@ interface JWTClaims {
   user_id: string;
   fullname: string;
   email: string;
+  phone_number: string;
   is_active: boolean;
   is_driver_verified: boolean;
 }
@@ -32,6 +33,7 @@ export const useAuth = () => {
           id: data.user_id,
           fullName: data.fullname,
           email: data.email,
+          phoneNumber: data.phone_number,
           isActive: data.is_active,
           isDriverVerified: data.is_driver_verified,
         };

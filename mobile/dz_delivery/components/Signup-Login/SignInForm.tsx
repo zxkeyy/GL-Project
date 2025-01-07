@@ -40,6 +40,7 @@ export function SignInForm({
           fontSize: 28,
           fontWeight: "bold",
           marginBottom: 40,
+          paddingTop: 8,
           textAlign: "center",
         }}
       >

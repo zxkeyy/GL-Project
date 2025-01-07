@@ -1,16 +1,17 @@
 import apiClient from "@/services/apiClient";
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
+import useLocation from "./useLocation";
 
 export interface Address {
-  unit: string;
-  building_type: string;
-  street: string;
-  city: string;
-  state: string;
-  postal_code: string;
-  longitude: number;
-  latitude: number;
+  unit: string | null;
+  building_type: string | null;
+  street: string | null;
+  city: string | null;
+  state: string | null;
+  postal_code: string | null;
+  longitude: number | null;
+  latitude: number | null;
 }
 
 export interface Delivery {
