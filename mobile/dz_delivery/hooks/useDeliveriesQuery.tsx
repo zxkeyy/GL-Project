@@ -55,7 +55,9 @@ const useDeliveries = () => {
   };
 
   // Queries
-  const { data: deliveries = [], isLoading: isDeliveriesLoading } = useQuery({
+  const { data: deliveries = [], isLoading: isDeliveriesLoading } = useQuery<
+    Delivery[]
+  >({
     queryKey: [QUERY_KEYS.deliveries],
     queryFn: async () => {
       const response = await apiClient.get("/delivery/deliveries/");
@@ -66,7 +68,7 @@ const useDeliveries = () => {
   const {
     data: currentDeliveries = [],
     isLoading: isCurrentDeliveriesLoading,
-  } = useQuery({
+  } = useQuery<Delivery[]>({
     queryKey: [QUERY_KEYS.currentDeliveries],
     queryFn: async () => {
       if (!user) return [];
@@ -81,7 +83,7 @@ const useDeliveries = () => {
   const {
     data: availableDeliveries = [],
     isLoading: isAvailableDeliveriesLoading,
-  } = useQuery({
+  } = useQuery<Delivery[]>({
     queryKey: [QUERY_KEYS.availableDeliveries],
     queryFn: async () => {
       if (!user) return [];
@@ -95,7 +97,7 @@ const useDeliveries = () => {
   const {
     data: completedDeliveries = [],
     isLoading: isCompletedDeliveriesLoading,
-  } = useQuery({
+  } = useQuery<Delivery[]>({
     queryKey: [QUERY_KEYS.completedDeliveries],
     queryFn: async () => {
       if (!user) return [];
