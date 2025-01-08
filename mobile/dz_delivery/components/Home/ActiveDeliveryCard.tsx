@@ -23,7 +23,7 @@ const ActiveDeliveryCard = ({ offer }: Props) => {
   const [code, setCode] = useState("");
 
   const handleCancelOffer = () => {
-    updateStatus(offer.id, "CANCELED", null);
+    updateStatus(offer.id, "CANCELLED", null);
   };
 
   const handleStatusUpdate = () => {

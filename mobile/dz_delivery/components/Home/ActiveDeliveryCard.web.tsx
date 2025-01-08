@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
+import useDeliveries, { Delivery } from "@/hooks/useDeliveriesQuery";
 import Status from "./Status";
 
 interface Props {
@@ -22,7 +22,7 @@ const ActiveDeliveryCard = ({ offer }: Props) => {
   const [code, setCode] = useState("");
 
   const handleCancelOffer = () => {
-    updateStatus(offer.id, "CANCELED", null);
+    updateStatus(offer.id, "CANCELLED", null);
   };
 
   const handleStatusUpdate = () => {

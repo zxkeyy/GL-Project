@@ -3,7 +3,7 @@ import InstantOfferCard from "@/components/Home/InstantOfferCard";
 import MapModal from "@/components/Home/MapModal";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
-import useDeliveries from "@/hooks/useDeliveries";
+import useDeliveries from "@/hooks/useDeliveriesQuery";
 import useLocation from "@/hooks/useLocation";
 import { router } from "expo-router";
 import React from "react";
@@ -66,7 +66,7 @@ const offers = [
 ];
 
 export default function CurrentDeliveriesScreen() {
-  const { currentDeliveries } = useDeliveries();
+  const { currentDeliveries, completedDeliveries } = useDeliveries();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
@@ -167,6 +167,25 @@ export default function CurrentDeliveriesScreen() {
           <ActiveDeliveryCard offer={item} key={item.id} />
         ))}
         <ActiveDeliveryCard offer={offers[0]} />
+      </View>
+      {/* Delivery history */}
+      <View style={{ marginBottom: 24 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 12,
+            paddingHorizontal: 16,
+          }}
+        >
+          <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
+            Delivery history
+          </ThemedText>
+        </View>
+        {completedDeliveries.map((item) => (
+          <ActiveDeliveryCard offer={item} key={item.id} />
+        ))}
       </View>
     </ScrollView>
   );

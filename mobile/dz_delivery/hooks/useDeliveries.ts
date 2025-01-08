@@ -45,6 +45,9 @@ export interface Delivery {
 
 const useDeliveries = () => {
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+  const [availableDeliveries, setAvailableDeliveries] = useState<Delivery[]>(
+    []
+  );
   const [currentDeliveries, setCurrentDeliveries] = useState<Delivery[]>([]);
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -130,6 +133,25 @@ const useDeliveries = () => {
     }
   };
 
+  const fetchAvailableDeliveries = async () => {
+    setLoading(true);
+    // Fetch the deliveries
+    try {
+      if (!user) {
+        return;
+      }
+      const response = await apiClient.get(
+        `/delivery/deliveries/available_deliveries/`
+      );
+      const data = response.data;
+      setAvailableDeliveries(data);
+    } catch (error) {
+      console.error("Fetch available deliveries error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchDeliveries = async () => {
     setLoading(true);
     // Fetch the deliveries
@@ -146,12 +168,14 @@ const useDeliveries = () => {
 
   useEffect(() => {
     fetchCurrentDeliveries();
+    fetchAvailableDeliveries();
     fetchDeliveries();
   }, []);
 
   return {
     deliveries,
     currentDeliveries,
+    availableDeliveries,
     loading,
     acceptDelivery,
     updateStatus,
