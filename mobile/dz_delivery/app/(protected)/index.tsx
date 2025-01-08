@@ -88,10 +88,16 @@ export default function DeliveryScreen() {
           <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <TouchableOpacity style={{ marginLeft: 0 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 0 }}
+            onPress={() => router.replace("/")}
+          >
             <Icon name="home-variant-outline" size={23} color="#22C55E" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 8 }}
+            onPress={() => router.replace("/profile")}
+          >
             <Icon name="account-outline" size={23} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity

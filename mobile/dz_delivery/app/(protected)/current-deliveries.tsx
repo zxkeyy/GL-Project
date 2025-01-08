@@ -96,10 +96,16 @@ export default function CurrentDeliveriesScreen() {
           >
             <Icon name="home-variant-outline" size={23} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 8 }}
+            onPress={() => router.replace("/profile")}
+          >
             <Icon name="account-outline" size={23} color="#000" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 8 }}
+            onPress={() => router.replace("/current-deliveries")}
+          >
             <Icon name="package-variant-closed" size={23} color="#22C55E" />
           </TouchableOpacity>
           <TouchableOpacity style={{ marginLeft: 8 }}>
