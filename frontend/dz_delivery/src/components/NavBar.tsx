@@ -2,10 +2,7 @@ import { Link } from "react-router-dom";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import Logo from "../assets/logo.svg"; 
 import { Button } from "@mui/material";
-<<<<<<< Updated upstream
 import React from "react";
-=======
->>>>>>> Stashed changes
 
 function NavBar() {
   return (

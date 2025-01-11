@@ -2,10 +2,7 @@ import SignupForm from "../components/SignupForm"
 import Box from '@mui/material/Box';
 import { CssBaseline, Typography} from "@mui/material";
 import { Link } from "react-router-dom";
-<<<<<<< Updated upstream
 import React from "react";
-=======
->>>>>>> Stashed changes
 
 
 function Signup() {

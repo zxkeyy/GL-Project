@@ -5,10 +5,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import { Code, DesignServices, Build, Download } from "@mui/icons-material";
 import CheckCircle from "@mui/icons-material/CheckCircle";
-<<<<<<< Updated upstream
 import React from "react";
-=======
->>>>>>> Stashed changes
 
 function Home() {
 
@@ -48,11 +45,7 @@ function Home() {
                     Your key to the fastest most comfortable delivery
                 </Box>
                 <Box sx={{ mt: 8}}>
-<<<<<<< Updated upstream
                     <Link to='/Package'>
-=======
-                    <Link to='/'>
->>>>>>> Stashed changes
                     <Button
                         variant="contained"
                         color="primary"
@@ -191,32 +184,6 @@ function Home() {
                 </Box>
             </Container>
 
-<<<<<<< Updated upstream
-=======
-
-            <Container style={{height: '60vh', backgroundColor: '#FFFFFF'}}>
-                <Box sx={{width: '500px', margin: 'auto', paddingTop: '40px', fontSize: '30px'}}>
-                Track Your Package
-                </Box>
-                <Box sx={{width: '500px', margin: 'auto', paddingTop: '20px'}}>
-                    <form style={{display: 'grid', gap: '15px'}}>
-                    <input
-                        type="text"
-                        name="PIN Code"
-                        placeholder="PIN Code"
-                        required
-                        style={{ flex: 1 , height: '55px', width: '100%',borderWidth: '1.5px', borderColor: '#191A1057',
-                             borderRadius: '5px'}}
-                    />
-                    <button type="submit" style={{ width: '100%' , borderRadius: '10px', backgroundColor: '#191A10',
-                        color: 'white'
-                        }}>
-                        Submit
-                    </button>
-                    </form>
-                </Box>
-            </Container>
->>>>>>> Stashed changes
             <Box className="p-0 m-0 " style={{width: '100%',height: '60vh', backgroundColor: '#D3EE98'}}>
                 <Footer/>
             </Box>

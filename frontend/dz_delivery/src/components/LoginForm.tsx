@@ -26,21 +26,13 @@ const LoginForm: React.FC = () => {
 
 
   return (
-<<<<<<< Updated upstream
     <form style={{ maxWidth: '100%', margin: 'auto' }}>
-=======
-    <form onSubmit={handleSubmit} style={{ maxWidth: '100%', margin: 'auto' }}>
->>>>>>> Stashed changes
       <div style={{ marginTop: '10px' }}>
         <input
           type="email"
           name="email"
           placeholder="Email Address"
           value={formData.email}
-<<<<<<< Updated upstream
-=======
-          onChange={handleChange}
->>>>>>> Stashed changes
           required
           style={inputStyle}
         />
@@ -52,10 +44,6 @@ const LoginForm: React.FC = () => {
           name="password"
           placeholder="Password"
           value={formData.password}
-<<<<<<< Updated upstream
-=======
-          onChange={handleChange}
->>>>>>> Stashed changes
           required
           style={inputStyle}
         />

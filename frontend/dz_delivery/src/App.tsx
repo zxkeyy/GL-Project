@@ -1,24 +1,12 @@
 import { Outlet } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-<<<<<<< Updated upstream
 import React from "react";
-=======
->>>>>>> Stashed changes
 
 
 function App() {
   return ( 
     <div>
       <main>
-<<<<<<< Updated upstream
-        <Outlet /> 
-      </main>
-    </div>
-  )
-}
-
-export default App;
-=======
         <Outlet /> {/* Dynamic rendering of child routes */}
       </main>
     </div>
@@ -36,4 +24,3 @@ export default App;
         Get Started
       </Button>
     </Container>*/
->>>>>>> Stashed changes
