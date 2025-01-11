@@ -1,7 +1,10 @@
 import { CssBaseline, Box, Typography } from "@mui/material"
 import { Link } from "react-router-dom"
 import LoginForm from "../components/LoginForm"
+<<<<<<< Updated upstream
 import React from "react"
+=======
+>>>>>>> Stashed changes
 
 function Login() {
     return (

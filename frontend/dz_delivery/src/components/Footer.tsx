@@ -1,7 +1,10 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import { Email, Phone, LocationOn, Facebook, Instagram, LinkedIn } from '@mui/icons-material';
 import Logo from "../assets/logo.svg"; 
+<<<<<<< Updated upstream
 import React from 'react';
+=======
+>>>>>>> Stashed changes
 
 
 const Footer = (): JSX.Element => {
