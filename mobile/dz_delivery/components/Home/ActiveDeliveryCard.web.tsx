@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
+import useDeliveries, { Delivery } from "@/hooks/useDeliveriesQuery";
+import Status from "./Status";
 
 interface Props {
   offer: Delivery;
@@ -21,14 +22,14 @@ const ActiveDeliveryCard = ({ offer }: Props) => {
   const [code, setCode] = useState("");
 
   const handleCancelOffer = () => {
-    updateStatus(offer.id, "CANCELED", null);
+    updateStatus(offer.id, "CANCELLED", null);
   };
 
   const handleStatusUpdate = () => {
     if (offer.status === "ASSIGNED") {
       updateStatus(offer.id, "PICKED_UP", null);
     } else if (offer.status === "PICKED_UP") {
-      updateStatus(offer.id, "IN_TRANSIT", null);
+      updateStatus(offer.id, "ARRIVED", null);
     } else if (offer.status === "IN_TRANSIT") {
       updateStatus(offer.id, "ARRIVED", null);
     }
@@ -166,92 +167,224 @@ const ActiveDeliveryCard = ({ offer }: Props) => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <ScrollView
+          <View
             style={{
               backgroundColor: "white",
               borderRadius: 10,
-              padding: 10,
+              padding: 0,
               minWidth: 200,
-              maxWidth: "95%",
+              width: "95%",
               maxHeight: "90%",
             }}
           >
-            <TouchableOpacity
-              onPress={() => setIsOpen(false)}
-              style={{
-                alignSelf: "flex-end",
-                marginBottom: 5,
-                marginRight: 5,
-              }}
-            >
-              <Icon name="close" size={20} color="#000" />
-            </TouchableOpacity>
-            <ThemedText style={{ fontSize: 8 }}>
-              {JSON.stringify(offer)}
-            </ThemedText>
             <View
               style={{
                 width: "100%",
-                height: 300,
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
-                backgroundColor: "#72BF78",
+                flexDirection: "row",
+                padding: 10,
+                marginBottom: 0,
               }}
             >
-              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
-                Map Placeholder
+              <ThemedText style={{ fontSize: 18, fontWeight: 600 }}>
+                Offer details
               </ThemedText>
+              <TouchableOpacity
+                onPress={() => setIsOpen(false)}
+                style={{
+                  alignSelf: "flex-end",
+                  marginRight: 0,
+                }}
+              >
+                <Icon name="close" size={20} color="#000" />
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={handleStatusUpdate}
-              style={{
-                backgroundColor: "#FC41255E",
-                paddingHorizontal: 0,
-                paddingVertical: 2,
-                borderRadius: 4,
-                borderWidth: 1,
-                borderColor: "#FF3B30",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
-                Update status
-              </ThemedText>
-            </TouchableOpacity>
-            <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
-              Delivery code
-            </ThemedText>
-            <TextInput
-              style={{
-                height: 40,
-                borderColor: "gray",
-                borderWidth: 1,
-                borderRadius: 4,
-                padding: 8,
-                marginVertical: 8,
-              }}
-              onChangeText={setCode}
-              value={code}
-            />
-            <TouchableOpacity
-              onPress={completeDelivery}
-              style={{
-                backgroundColor: "#72BF78",
-                paddingHorizontal: 0,
-                paddingVertical: 2,
-                borderRadius: 4,
-                borderWidth: 1,
-                borderColor: "#72BF78",
-                flexDirection: "row",
-                justifyContent: "center",
-              }}
-            >
-              <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
-                Complete delivery {code}
-              </ThemedText>
-            </TouchableOpacity>
-          </ScrollView>
+            <ScrollView>
+              <View
+                style={{
+                  width: "100%",
+                  height: 300,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#72BF78",
+                }}
+              >
+                <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                  Map Placeholder
+                </ThemedText>
+              </View>
+              <View
+                style={{
+                  borderRadius: 7,
+                  boxShadow: "0px 4px 29px 0px rgba(0, 0, 0, 0.12)",
+                  alignItems: "center",
+                  backgroundColor: "#FFFFFF",
+                  flexDirection: "row",
+                  padding: 6,
+                  margin: 10,
+                }}
+              >
+                <View
+                  style={{
+                    width: 42,
+                    height: 42,
+                    backgroundColor: "#72BF78",
+                    borderRadius: 8,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon
+                    name="package-variant-closed"
+                    size={22}
+                    color="#FEFF9F"
+                  />
+                </View>
+                <View style={{ marginLeft: 13 }}>
+                  <ThemedText style={{ fontSize: 13, fontWeight: "600" }}>
+                    {offer.package.recipient_name}
+                  </ThemedText>
+                  <ThemedText style={{ fontSize: 11, color: "#00000073" }}>
+                    {offer.package.recipient_phone}
+                  </ThemedText>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    width: 42,
+                    height: 42,
+                    backgroundColor: "#A0D68399",
+                    borderWidth: 2,
+                    borderColor: "#72BF78",
+                    borderRadius: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginLeft: "auto",
+                  }}
+                >
+                  <Icon name="phone" size={24} color="#396A3D" />
+                </TouchableOpacity>
+              </View>
+              <View style={{ paddingHorizontal: 10, gap: 10 }}>
+                <ThemedText
+                  style={{ fontSize: 16, fontWeight: "600", color: "#72BF78" }}
+                >
+                  Offer Status {offer.status}
+                </ThemedText>
+                <Status
+                  name="Picked up package"
+                  description="Lorem ipsum dolor sit amet"
+                  completed={[
+                    "PICKED_UP",
+                    "IN_TRANSIT",
+                    "ARRIVED",
+                    "DELIVERED",
+                  ].includes(offer.status)}
+                />
+                <Status
+                  name="Arrived at destination"
+                  description="Lorem ipsum dolor sit amet"
+                  completed={["ARRIVED", "DELIVERED"].includes(offer.status)}
+                />
+                <Status
+                  name="Delivered"
+                  description="Lorem ipsum dolor sit amet"
+                  completed={["DELIVERED"].includes(offer.status)}
+                />
+              </View>
+              {offer.status === "ARRIVED" && (
+                <View style={{ paddingHorizontal: 10 }}>
+                  <ThemedText
+                    style={{
+                      fontSize: 13,
+                      fontWeight: "600",
+                      marginBottom: -8,
+                    }}
+                  >
+                    Delivery code
+                  </ThemedText>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      borderColor: "gray",
+                      borderWidth: 1,
+                      borderRadius: 4,
+                      padding: 8,
+                      marginVertical: 8,
+                    }}
+                    onChangeText={setCode}
+                    value={code}
+                  />
+                </View>
+              )}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingHorizontal: 10,
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={
+                    offer.status === "ARRIVED"
+                      ? completeDelivery
+                      : handleStatusUpdate
+                  }
+                  style={{
+                    width: "60%",
+                    backgroundColor: "#191A10",
+                    paddingHorizontal: 0,
+                    paddingVertical: 5,
+                    borderRadius: 10,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ThemedText
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "600",
+                      color: "#FFFFFF",
+                    }}
+                  >
+                    {offer.status === "ASSIGNED"
+                      ? "Confirm pickup"
+                      : offer.status === "PICKED_UP"
+                      ? "Confirm arrival"
+                      : offer.status === "IN_TRANSIT"
+                      ? "Confirm arrival"
+                      : "Complete delivery"}
+                  </ThemedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    width: "35%",
+                    backgroundColor: "#FC41255E",
+                    paddingHorizontal: 0,
+                    paddingVertical: 5,
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: "#FF3B30",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                  }}
+                  onPress={handleCancelOffer}
+                >
+                  <ThemedText
+                    style={{
+                      color: "#FF3B30",
+                      fontWeight: "600",
+                      fontSize: 16,
+                    }}
+                  >
+                    Cancel offer
+                  </ThemedText>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
+          </View>
         </View>
       </Modal>
     </View>

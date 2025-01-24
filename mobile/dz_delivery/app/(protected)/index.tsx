@@ -2,7 +2,7 @@ import InstantOfferCard from "@/components/Home/InstantOfferCard";
 import MapModal from "@/components/Home/MapModal";
 import OfferCard from "@/components/Home/OfferCard";
 import { ThemedText } from "@/components/ThemedText";
-import useDeliveries from "@/hooks/useDeliveries";
+import useDeliveries from "@/hooks/useDeliveriesQuery";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -64,7 +64,7 @@ const offers = [
 ];
 
 export default function DeliveryScreen() {
-  const { deliveries } = useDeliveries();
+  const { availableDeliveries } = useDeliveries();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
@@ -88,10 +88,16 @@ export default function DeliveryScreen() {
           <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-          <TouchableOpacity style={{ marginLeft: 0 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 0 }}
+            onPress={() => router.replace("/")}
+          >
             <Icon name="home-variant-outline" size={23} color="#22C55E" />
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: 8 }}>
+          <TouchableOpacity
+            style={{ marginLeft: 8 }}
+            onPress={() => router.replace("/profile")}
+          >
             <Icon name="account-outline" size={23} color="#000" />
           </TouchableOpacity>
           <TouchableOpacity
@@ -198,7 +204,7 @@ export default function DeliveryScreen() {
             <ThemedText style={{ color: "#666" }}>See more</ThemedText>
           </TouchableOpacity>
         </View>
-        {deliveries.map((item) => (
+        {availableDeliveries.map((item) => (
           <OfferCard offer={item} key={item.id} />
         ))}
         <OfferCard offer={offers[0]} />

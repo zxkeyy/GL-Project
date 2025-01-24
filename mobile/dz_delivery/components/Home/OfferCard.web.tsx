@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import useDeliveries, { Delivery } from "@/hooks/useDeliveries";
+import useDeliveries, { Delivery } from "@/hooks/useDeliveriesQuery";
 
 interface Props {
   offer: Delivery;

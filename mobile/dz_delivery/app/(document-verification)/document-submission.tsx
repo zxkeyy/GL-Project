@@ -1,11 +1,7 @@
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { BackgroundBlur } from "@/components/Signup-Login/BackgroundBlur";
 import { ThemedText } from "@/components/ThemedText";
-import { useAuth } from "@/hooks/useAuth";
 import useDocuments from "@/hooks/useDocuments";
-import { useTimer } from "@/hooks/useTimer";
-import { router } from "expo-router";
-import { use } from "i18next";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {

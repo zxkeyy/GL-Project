@@ -57,13 +57,13 @@ class DriverViewSet(viewsets.ModelViewSet):
             id__in=Subquery(
                 DeliveryStatus.objects.filter(
                     delivery=OuterRef('pk'),
-                    status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+                    status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT', 'ARRIVED']
                 ).order_by('-created_at').values('delivery')[:1]
             )
         ).annotate(
             latest_status=Subquery(latest_status_subquery)
         ).filter(
-            latest_status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT']
+            latest_status__in=['REQUESTED', 'ASSIGNED', 'PICKED_UP', 'IN_TRANSIT', 'ARRIVED']
         )
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
@@ -160,7 +160,20 @@ class DeliveryViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'])
     def available_deliveries(self, request):
-        deliveries = Delivery.objects.filter(package__status='REQUESTED')
+        latest_status_subquery = DeliveryStatus.objects.filter(
+            delivery=OuterRef('pk')
+        ).order_by('-created_at').values('status')[:1]
+        deliveries = Delivery.objects.filter(id__in=Subquery(
+                DeliveryStatus.objects.filter(
+                    delivery=OuterRef('pk'),
+                    status__in=['REQUESTED']
+                ).order_by('-created_at').values('delivery')[:1]
+            )
+        ).annotate(
+            latest_status=Subquery(latest_status_subquery)
+        ).filter(
+            latest_status__in=['REQUESTED']
+        )
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
 
@@ -169,15 +182,20 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         delivery = self.get_object()
         driver = get_object_or_404(Driver, user=request.user)
 
-        if delivery.package.status != 'REQUESTED':
+        latest_status = DeliveryStatus.objects.filter(
+            delivery=delivery
+        ).order_by('-created_at').values('status')[:1].first()
+
+        if latest_status and latest_status['status'] != 'REQUESTED':
             raise ValidationError("Delivery is not available for acceptance")
             
         if delivery.driver:
             raise ValidationError("Delivery has already been accepted by another driver")
             
         delivery.driver = driver
-        delivery.package.status = 'ASSIGNED'
         delivery.save()
+        # Update status
+        DeliveryStatus.objects.create(delivery=delivery, status='ASSIGNED', updated_by=request.user)
         return Response({'status': 'delivery accepted'})
 
     @action(detail=True, methods=['post'])
@@ -210,7 +228,8 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         )
 
         # Update delivery and package status
-        delivery.package.status = status
+        if status == 'DELIVERED':
+            delivery.package.status = status
         delivery.package.save()
 
         if status == 'PICKED_UP':
@@ -225,10 +244,20 @@ class DeliveryViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def delivery_history(self, request):
         user = request.user
-        if user.is_staff:
-            deliveries = self.queryset.all()
-        else:
-            deliveries = self.queryset.filter(driver__user=user)
+        latest_status_subquery = DeliveryStatus.objects.filter(
+            delivery=OuterRef('pk')
+        ).order_by('-created_at').values('status')[:1]
+        deliveries = self.queryset.filter(driver__user=user, id__in=Subquery(
+                DeliveryStatus.objects.filter(
+                    delivery=OuterRef('pk'),
+                    status__in=['DELIVERED', 'CANCELLED', 'FAILED']
+                ).order_by('-created_at').values('delivery')[:1]
+            )
+        ).annotate(
+            latest_status=Subquery(latest_status_subquery)
+        ).filter(
+            latest_status__in=['DELIVERED', 'CANCELLED', 'FAILED']
+        )
         serializer = DeliveryListSerializer(deliveries, many=True)
         return Response(serializer.data)
 
@@ -265,7 +294,7 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         if delivery.package.verification_code != verification_code:
             raise ValidationError("Invalid verification code")
             
-        if delivery.package.status != 'ARRIVED':
+        if delivery.status != 'ARRIVED':
             raise ValidationError("Package must be arrived before verification")
 
         delivery.package.status = 'DELIVERED'
@@ -273,6 +302,9 @@ class DeliveryViewSet(viewsets.ModelViewSet):
         
         delivery.actual_delivery_time = timezone.now()
         delivery.save()
+
+        # Update status
+        DeliveryStatus.objects.create(delivery=delivery, status='DELIVERED', updated_by=request.user)
         
         return Response({'status': 'delivery verified'})
 
