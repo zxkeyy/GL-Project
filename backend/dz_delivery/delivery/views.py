@@ -11,6 +11,7 @@ from django.utils import timezone
 from users.permissions import IsAdminOrDriver
 
 from .models import Driver, Delivery, Package, ServiceArea, DeliveryStatus
+from .utils import calculate_delivery_distance, calculate_delivery_price
 from .serializers import DeliverySerializer, DeliveryStatusSerializer, DriverSerializer, DeliveryListSerializer, EmptySerializer, PackageSerializer, PackageTrackingSerializer, ServiceAreaSerializer
 
 class DriverViewSet(viewsets.ModelViewSet):
@@ -93,14 +94,32 @@ class PackageViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         generated_code = serializer.generate_verification_code()
-        serializer.save(sender=self.request.user, verification_code=generated_code)
+        distance = calculate_delivery_distance(
+            serializer.validated_data['pickup_address'],
+            serializer.validated_data['delivery_address']
+        )
+        cost = calculate_delivery_price(distance=distance, weight=serializer.validated_data['weight'])
+        serializer.save(sender=self.request.user, verification_code=generated_code, cost=cost)
         self.send_verification_code(serializer.instance)
     
     def send_verification_code(self, package):
         # Send verification code to recipient
         print(f"Verification code for package {package.tracking_number}: {package.verification_code}")
         return True
-    
+
+    @action(detail=False, methods=['post'], serializer_class=EmptySerializer)
+    def calculate_cost(self, request):
+        pickup_address = request.data.get('pickup_address')
+        delivery_address = request.data.get('delivery_address')
+        weight = request.data.get('weight')
+
+        if not all([pickup_address, delivery_address, weight]):
+            raise ValidationError("pickup_address, delivery_address, and weight are required")
+            
+        distance = calculate_delivery_distance(pickup_address, delivery_address)
+        cost = calculate_delivery_price(distance=distance, weight=weight)
+        return Response({'cost': cost})
+
     @action(detail=False, methods=['get'])
     def my_packages(self, request):
         user = request.user
