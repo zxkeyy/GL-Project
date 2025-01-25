@@ -237,7 +237,8 @@ class UserViewSet(UserViewSet):
                     if redirect_id == 'web':
                         return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
                     elif redirect_id == "mobile":
-                        return HttpResponseRedirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
+                        print("Redirecting to mobile deep link: yourapp://activation-success/")
+                        return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
                     else:
                         return Response(
                         {"message": "Account successfully activated."},
@@ -261,5 +262,6 @@ class UserViewSet(UserViewSet):
             if redirect_id == 'web':
                 return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
             elif redirect_id == "mobile":
-                return HttpResponseRedirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
+                print("Redirecting to mobile deep link: yourapp://activation-success/")
+                return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
         return response
