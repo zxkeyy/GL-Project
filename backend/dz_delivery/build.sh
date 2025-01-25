@@ -13,8 +13,8 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 
 # create superuser
-export DJANGO_SUPERUSER_USERNAME=admin
-export DJANGO_SUPERUSER_EMAIL=Z_selmani@estin.dz
-export DJANGO_SUPERUSER_PASSWORD=changeme123
-export DJANGO_SUPERUSER_FULL_NAME="Admin User"
-python manage.py createsuperuser --noinput
+# export DJANGO_SUPERUSER_USERNAME=admin
+# export DJANGO_SUPERUSER_EMAIL=Z_selmani@estin.dz
+# export DJANGO_SUPERUSER_PASSWORD=changeme123
+# export DJANGO_SUPERUSER_FULL_NAME="Admin User"
+# python manage.py createsuperuser --noinput
