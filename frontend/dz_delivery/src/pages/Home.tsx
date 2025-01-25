@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 import { Code, DesignServices, Build, Download } from "@mui/icons-material";
 import CheckCircle from "@mui/icons-material/CheckCircle";
+import package2 from '../assets/package2.svg';
 import React from "react";
 
 function Home() {
@@ -68,8 +69,8 @@ function Home() {
                 </Box>
             </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', flex: '48 0 0 '}}>
-                    <Box sx={{flex: 1, p: 2, backgroundColor: 'F9F9F9', boxShadow: 2}}>
-                        img
+                    <Box sx={{flex: 1, p: 2, backgroundColor: '#FEFF9F', borderRadius: '20px'}}>
+                        <img src={package2} alt="package2" style={{ paddingLeft: 50 }} />
                     </Box>
                 </Box>
             </Container>
@@ -77,7 +78,7 @@ function Home() {
             <Container className="p-0" style={{width: '100vw', height: '90vh'}}>
             <Box style={{display: 'flex', height: '70vh', backgroundColor: '#FEFF9F', borderRadius: 40, margin: 20, marginTop: 50}}>
                 <Box sx={{display: 'flex', flex: '50% 0 0'}}>
-                    pic
+                    pic 
                 </Box>
                 <Box sx={{display: 'flex', flexDirection: 'column', marginTop: 7}}>
                     <Box sx={{ textAlign: 'left'}}>
@@ -137,12 +138,13 @@ function Home() {
                 </Box>
             </Container>
 
-            <Container className="p-0">
+            <Container className="p-0" style={{ height: '90vh'}}>
             <Box
                 sx={{
                     textAlign: 'center',
                     py: 4,
                     backgroundColor: '#f9f9f9',
+                    margin: 'auto'
                 }}
                 >
                 <Typography variant="h4" sx={{ mb: 4 }}>

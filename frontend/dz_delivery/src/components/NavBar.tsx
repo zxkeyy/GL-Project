@@ -8,7 +8,7 @@ function NavBar() {
   return (
     <>
     <Navbar bg="light" expand="lg" style={{ margin: 0, padding: 0}}>
-      <Container fluid style={{backgroundColor: "#FFFFFF", width: '98.7vw', height: "10vh"}}>
+      <Container fluid style={{backgroundColor: "#A0D683", width: '98.7vw', height: "10vh"}}>
         {/* Brand Logo */}
         <Navbar.Brand as={Link} to="/" style={{ display: "flex", alignItems: "center", marginTop: '0px', paddingLeft: '10px' }}>
           <img src={Logo} alt="Logo" width={110} />
@@ -38,15 +38,15 @@ function NavBar() {
               color="primary"
               className="mx-2"
               sx={{
-                color: 'black',
-                backgroundColor: '#FFFFFF', 
-                border: '2px solid #A0D683',
+                color: 'white',
+                backgroundColor: '#191A10', 
+                border: '2px solid #191A10',
                 borderRadius: '20px',
                 width: '110px',
                 boxShadow: 'none',
                 '&:hover': {
                   boxShadow: '2px',
-                  border: '2px solid #A0D683',
+                  border: '2px solid #191A10',
                 },
               }}
             >
@@ -57,10 +57,11 @@ function NavBar() {
             <Button
               variant="contained"
               color="primary"
-              className="mx-2"
+              className="mx-2" 
               sx={{
+                color: 'black',
                 backgroundColor: '#A0D683', 
-                border: '0px solid #ff5722',
+                border: '2px solid #191A10',
                 borderRadius: '20px',
                 width: '110px',
                 boxShadow: 'none',

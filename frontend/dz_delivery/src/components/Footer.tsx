@@ -26,7 +26,7 @@ const Footer = (): JSX.Element => {
       <Box sx={{ textAlign: { xs: 'center', md: 'left' }, mb: { xs: 4, md: 0 } }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
           Contact Us
-        </Typography>
+        </Typography> 
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <IconButton disableRipple>
             <LocationOn />

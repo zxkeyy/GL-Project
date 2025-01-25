@@ -35,4 +35,4 @@ function Pincode() {
         </Box>
     )
 }
-export default Pincode;
+export default Pincode; 

@@ -11,7 +11,7 @@ function Track() {
                 </Box>
                 <Box sx={{flex: 1, display: 'flex', flexDirection: 'column',gap: 4, margin: 4, marginTop: 6}}>
                     <Box sx={{fontSize: 40}}>
-                        Title
+                        Title 
                     </Box>
                     <Box sx={{fontSize: 25}}>
                         Description
