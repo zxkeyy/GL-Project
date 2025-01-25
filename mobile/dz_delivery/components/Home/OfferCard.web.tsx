@@ -3,6 +3,7 @@ import { Modal, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import useDeliveries, { Delivery } from "@/hooks/useDeliveriesQuery";
+import { ScrollView } from "react-native-gesture-handler";
 
 interface Props {
   offer: Delivery;
@@ -105,7 +106,7 @@ const OfferCard = ({ offer }: Props) => {
                 fontSize: 10,
               }}
             >
-              View destination
+              View details
             </ThemedText>
           </TouchableOpacity>
           <TouchableOpacity
@@ -144,12 +145,13 @@ const OfferCard = ({ offer }: Props) => {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           }}
         >
-          <View
+          <ScrollView
             style={{
               backgroundColor: "white",
               borderRadius: 10,
               padding: 10,
-              minWidth: 200,
+              maxHeight: "90%",
+              minWidth: "95%",
               maxWidth: "95%",
             }}
           >
@@ -163,9 +165,78 @@ const OfferCard = ({ offer }: Props) => {
             >
               <Icon name="close" size={20} color="#000" />
             </TouchableOpacity>
-            <ThemedText style={{ fontSize: 8 }}>
-              {JSON.stringify(offer)}
-            </ThemedText>
+            <View>
+              <ThemedText
+                style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}
+              >
+                Package ID: {offer.id}
+              </ThemedText>
+
+              <View style={{ marginBottom: 16 }}>
+                <ThemedText style={{ fontWeight: "bold" }}>
+                  Package Details:
+                </ThemedText>
+                <ThemedText>
+                  Recipient: {offer.package.recipient_name}
+                </ThemedText>
+                <ThemedText>Phone: {offer.package.recipient_phone}</ThemedText>
+                <ThemedText>Weight: {offer.package.weight} kg</ThemedText>
+                <ThemedText>
+                  Dimensions: {offer.package.dimensions.width}x
+                  {offer.package.dimensions.height}x
+                  {offer.package.dimensions.length} cm
+                </ThemedText>
+                <ThemedText>
+                  Fragile: {offer.package.is_fragile ? "Yes" : "No"}
+                </ThemedText>
+                <ThemedText>
+                  Requires Signature:{" "}
+                  {offer.package.requires_signature ? "Yes" : "No"}
+                </ThemedText>
+                <ThemedText>Notes: {offer.package.notes}</ThemedText>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <ThemedText style={{ fontWeight: "bold" }}>
+                  Delivery Info:
+                </ThemedText>
+                <ThemedText>Driver ID: {offer.driver}</ThemedText>
+                <ThemedText>Status: {offer.status}</ThemedText>
+                <ThemedText>Distance: {offer.distance} km</ThemedText>
+                <ThemedText>Service Area: {offer.service_area}</ThemedText>
+              </View>
+
+              <View style={{ marginBottom: 16 }}>
+                <ThemedText style={{ fontWeight: "bold" }}>Pricing:</ThemedText>
+                <ThemedText>Base Fee: ${offer.base_fee}</ThemedText>
+                <ThemedText>Distance Fee: ${offer.distance_fee}</ThemedText>
+                <ThemedText style={{ fontWeight: "bold" }}>
+                  Total Amount: ${offer.total_amount}
+                </ThemedText>
+              </View>
+
+              <View>
+                <ThemedText style={{ fontWeight: "bold" }}>
+                  Addresses:
+                </ThemedText>
+                <ThemedText>
+                  Pickup:{" "}
+                  {offer.pickup_address.street +
+                    ", " +
+                    offer.pickup_address.city +
+                    ", " +
+                    offer.pickup_address.state}
+                </ThemedText>
+                <ThemedText>
+                  Dropoff:{" "}
+                  {offer.dropoff_address.street +
+                    ", " +
+                    offer.dropoff_address.city +
+                    ", " +
+                    offer.dropoff_address.state}
+                </ThemedText>
+              </View>
+            </View>
             <View
               style={{
                 width: "100%",
@@ -179,7 +250,28 @@ const OfferCard = ({ offer }: Props) => {
                 Map Placeholder
               </ThemedText>
             </View>
-          </View>
+            <TouchableOpacity
+              style={{
+                width: "100%",
+                backgroundColor: "#A0D68399",
+                paddingHorizontal: 0,
+                paddingVertical: 2,
+                borderRadius: 4,
+                borderWidth: 1,
+                marginTop: 10,
+                borderColor: "#72BF78",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+              onPress={handleAcceptOffer}
+            >
+              <ThemedText
+                style={{ color: "#396A3D", fontWeight: "600", fontSize: 12 }}
+              >
+                Accept offer
+              </ThemedText>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
     </View>

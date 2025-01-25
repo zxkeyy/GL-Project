@@ -65,29 +65,28 @@ export default function DocumentUpload({ document }: Props) {
       >
         <ThemedText>{document.document_type.description}</ThemedText>
       </View>
-      {!document.uploaded ||
-        (document.status == "rejected" && (
-          <TouchableOpacity
+      {(!document.uploaded || document.status == "rejected") && (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#4CAF50",
+            height: 48,
+            borderRadius: 8,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onPress={handleUpload}
+        >
+          <ThemedText
             style={{
-              backgroundColor: "#4CAF50",
-              height: 48,
-              borderRadius: 8,
-              alignItems: "center",
-              justifyContent: "center",
+              color: "#fff",
+              fontSize: 16,
+              fontWeight: "600",
             }}
-            onPress={handleUpload}
           >
-            <ThemedText
-              style={{
-                color: "#fff",
-                fontSize: 16,
-                fontWeight: "600",
-              }}
-            >
-              Submit
-            </ThemedText>
-          </TouchableOpacity>
-        ))}
+            Submit
+          </ThemedText>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

@@ -189,6 +189,7 @@ export const useAuth = () => {
         phone_number: phone,
         code,
       });
+      refreshAccessToken();
       return { success: true };
     } catch (error) {
       console.error("Phone verification error:", error);
@@ -216,6 +217,7 @@ export const useAuth = () => {
 
       const newAccessToken = response.data.access;
       setAccessToken(newAccessToken);
+
       return newAccessToken;
     } catch (error) {
       console.error("Token refresh error:", error);
@@ -242,6 +244,7 @@ export const useAuth = () => {
     resendActivationEmail,
     registerPhone,
     verifyPhone,
+    refreshAccessToken,
     user,
     accessToken,
     refreshToken,

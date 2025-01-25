@@ -79,13 +79,18 @@ export default function DeliveryScreen() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name="map-marker-outline" size={24} color="#000" />
           <ThemedText
-            style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 4 }}
+            style={{
+              fontSize: 28,
+              fontWeight: "800",
+              marginTop: 10,
+              paddingTop: 10,
+              marginHorizontal: 4,
+              color: "#22C55E",
+            }}
           >
-            Medea, Algeria
+            BLITZ
           </ThemedText>
-          <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           <TouchableOpacity
@@ -150,7 +155,7 @@ export default function DeliveryScreen() {
       </View>
 
       {/* Instant Offers */}
-      <View style={{ marginBottom: 20 }}>
+      {/* <View style={{ marginBottom: 20 }}>
         <View
           style={{
             flexDirection: "row",
@@ -163,9 +168,6 @@ export default function DeliveryScreen() {
           <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
             Instant offers
           </ThemedText>
-          <TouchableOpacity>
-            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
-          </TouchableOpacity>
         </View>
         <View style={{ overflow: "visible" }}>
           <ScrollView
@@ -184,7 +186,7 @@ export default function DeliveryScreen() {
             ))}
           </ScrollView>
         </View>
-      </View>
+      </View> */}
 
       {/* Offers You May Like */}
       <View style={{ marginBottom: 24 }}>
@@ -200,14 +202,15 @@ export default function DeliveryScreen() {
           <ThemedText style={{ fontSize: 18, fontWeight: "600" }}>
             Offers you may like
           </ThemedText>
-          <TouchableOpacity>
-            <ThemedText style={{ color: "#666" }}>See more</ThemedText>
-          </TouchableOpacity>
         </View>
+        {!availableDeliveries.length && (
+          <ThemedText style={{ textAlign: "center", marginTop: 20 }}>
+            No available deliveries
+          </ThemedText>
+        )}
         {availableDeliveries.map((item) => (
           <OfferCard offer={item} key={item.id} />
         ))}
-        <OfferCard offer={offers[0]} />
       </View>
     </ScrollView>
   );

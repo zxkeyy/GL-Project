@@ -81,13 +81,18 @@ export default function CurrentDeliveriesScreen() {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name="map-marker-outline" size={24} color="#000" />
           <ThemedText
-            style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 4 }}
+            style={{
+              fontSize: 28,
+              fontWeight: "800",
+              marginTop: 10,
+              paddingTop: 10,
+              marginHorizontal: 4,
+              color: "#22C55E",
+            }}
           >
-            Medea, Algeria
+            BLITZ
           </ThemedText>
-          <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           <TouchableOpacity
@@ -163,10 +168,14 @@ export default function CurrentDeliveriesScreen() {
             Your current offers
           </ThemedText>
         </View>
+        {!currentDeliveries.length && (
+          <ThemedText style={{ textAlign: "center", marginTop: 20 }}>
+            No current deliveries{" "}
+          </ThemedText>
+        )}
         {currentDeliveries.map((item) => (
           <ActiveDeliveryCard offer={item} key={item.id} />
         ))}
-        <ActiveDeliveryCard offer={offers[0]} />
       </View>
       {/* Delivery history */}
       <View style={{ marginBottom: 24 }}>
@@ -183,6 +192,11 @@ export default function CurrentDeliveriesScreen() {
             Delivery history
           </ThemedText>
         </View>
+        {!completedDeliveries.length && (
+          <ThemedText style={{ textAlign: "center", marginTop: 20 }}>
+            No completed deliveries
+          </ThemedText>
+        )}
         {completedDeliveries.map((item) => (
           <ActiveDeliveryCard offer={item} key={item.id} />
         ))}

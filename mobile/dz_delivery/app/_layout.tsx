@@ -7,8 +7,9 @@ import { useFonts } from "expo-font";
 import { Redirect, router, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import "react-native-reanimated";
+import * as Linking from "expo-linking";
 
 import "@/i18n";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -39,11 +40,27 @@ export default function RootLayout() {
     Sora: require("../assets/fonts/Sora-VariableFont_wght.ttf"),
   });
 
+  const handleDeepLink = useCallback(async () => {
+    if (loaded && !loading) {
+      const url = await Linking.getInitialURL();
+      if (url) {
+        const { path } = Linking.parse(url);
+
+        switch (path) {
+          case "activate-email-success":
+            router.push("/(email-verification)/activate-email-success");
+            break;
+        }
+      }
+    }
+  }, [loaded, loading]);
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded, loading, accessToken, user]);
+    handleDeepLink();
+  }, [loaded, loading, handleDeepLink, accessToken, user]);
 
   if (!loaded || loading) {
     return null;

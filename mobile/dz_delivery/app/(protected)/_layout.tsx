@@ -1,6 +1,6 @@
-import { Redirect, router, Tabs } from "expo-router";
+import { Redirect, router, Stack, Tabs } from "expo-router";
 import React, { useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, View, StyleSheet } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -11,55 +11,67 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { user, accessToken, loading } = useAuth();
+  const { user, accessToken, loading, refreshAccessToken } = useAuth();
 
-  // if (!loading && !accessToken) {
-  //   return <Redirect href="/(auth)/welcome-1" />;
-  // }
-  // if (!user?.isActive) {
-  //   return <Redirect href="/(email-verification)/activate-email" />;
-  // }
-  // if (!user?.phoneNumber) {
-  //   return <Redirect href="/(phone-verification)/register-phone" />;
-  // }
-  // if (!user?.isDriverVerified) {
-  //   return <Redirect href="/(document-verification)/document-submission" />;
-  // }
+  useEffect(() => {
+    refreshAccessToken;
+  }, [accessToken]);
+  if (!loading && !accessToken) {
+    return <Redirect href="/(auth)/welcome-1" />;
+  }
+  if (!user?.isActive) {
+    return <Redirect href="/(email-verification)/activate-email" />;
+  }
+  if (!user?.phoneNumber) {
+    return <Redirect href="/(phone-verification)/register-phone" />;
+  }
+  if (!user?.isDriverVerified) {
+    return <Redirect href="/(document-verification)/document-submission" />;
+  }
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
+    <View style={styles.container}>
+      <Stack
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: Colors[colorScheme ?? "light"].background,
           },
-          default: {},
-        }),
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            title: "Home",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="profile"
+          options={{
+            title: "Profile",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="current-deliveries"
+          options={{
+            title: "Current Deliveries",
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? 25 : 10,
+    backgroundColor: "#F5FCFF",
+  },
+});

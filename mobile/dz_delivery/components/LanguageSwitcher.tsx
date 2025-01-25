@@ -29,15 +29,15 @@ export default function LanguageSwitcher() {
     <View
       style={{
         position: "absolute",
-        top: 10,
+        top: 30,
         right: 10,
       }}
     >
       <TouchableOpacity
         style={{
           backgroundColor: "rgba(0, 0, 0, 1)",
-          height: 40,
-          width: 40,
+          height: 30,
+          width: 30,
           borderRadius: "100%",
           padding: 10,
           display: "flex",

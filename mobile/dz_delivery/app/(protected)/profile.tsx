@@ -6,7 +6,7 @@ import { ScrollView, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const profile = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#fdfdfd" }}>
@@ -21,13 +21,18 @@ const profile = () => {
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Icon name="map-marker-outline" size={24} color="#000" />
           <ThemedText
-            style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 4 }}
+            style={{
+              fontSize: 28,
+              fontWeight: "800",
+              marginTop: 10,
+              paddingTop: 10,
+              marginHorizontal: 4,
+              color: "#22C55E",
+            }}
           >
-            Medea, Algeria
+            BLITZ
           </ThemedText>
-          <Icon name="chevron-down" size={24} color="#000" />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
           <TouchableOpacity
@@ -105,6 +110,24 @@ const profile = () => {
                 : "No phone number provided"}
             </ThemedText>
           </View>
+          <TouchableOpacity
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 10,
+              marginTop: 20,
+              backgroundColor: "#FC41255E",
+              maxWidth: 100,
+            }}
+            onPress={logout}
+          >
+            <Icon name="logout" size={24} color="#000" />
+            <ThemedText
+              style={{ fontSize: 16, fontWeight: "500", marginHorizontal: 4 }}
+            >
+              Logout
+            </ThemedText>
+          </TouchableOpacity>
         </>
       )}
     </ScrollView>
