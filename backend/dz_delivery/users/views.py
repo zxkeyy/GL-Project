@@ -204,7 +204,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(UserViewSet):
-    @action(["get", "post"], detail=False, url_path="activate", allowed_methods=["get", "post"])
+    @action(["get", "post"], detail=False, url_path="activate")
     def activation(self, request, *args, **kwargs):
         # Handle GET requests (link activation)
         if request.method == "GET":
@@ -254,4 +254,11 @@ class UserViewSet(UserViewSet):
                 )
 
         # Handle POST requests (default Djoser behavior)
-        return super().activation(request, *args, **kwargs)
+        response = super().activation(request, *args, **kwargs)
+        if response.status_code == 204:
+            redirect_id = request.query_params.get('redirect_id')
+            if redirect_id == 'web':
+                return redirect("https://yourwebapp.com/activation-success/")
+            elif redirect_id == "mobile":
+                return redirect("yourapp://activation-success/")
+        return response
