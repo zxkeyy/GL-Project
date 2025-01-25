@@ -12,7 +12,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField('full name', max_length=255, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_client_verified = models.BooleanField(default=False)
+    is_client_verified = models.BooleanField(default=True)
     is_driver_verified = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
