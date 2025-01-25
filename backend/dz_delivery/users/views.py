@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
@@ -236,7 +237,7 @@ class UserViewSet(UserViewSet):
                     if redirect_id == 'web':
                         return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
                     elif redirect_id == "mobile":
-                        return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
+                        return HttpResponseRedirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
                     else:
                         return Response(
                         {"message": "Account successfully activated."},
@@ -260,5 +261,5 @@ class UserViewSet(UserViewSet):
             if redirect_id == 'web':
                 return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
             elif redirect_id == "mobile":
-                return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
+                return HttpResponseRedirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
         return response
