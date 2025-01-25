@@ -204,7 +204,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(UserViewSet):
-    @action(["get", "post"], detail=False, url_path="activate")
+    @action(["get", "post"], detail=False)
     def activation(self, request, *args, **kwargs):
         # Handle GET requests (link activation)
         if request.method == "GET":
