@@ -35,6 +35,9 @@ DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
 
+FRONTEND_URL_ACTIVATION_SUCCESS = env('FRONTEND_URL_ACTIVATION_SUCCESS', default='http://localhost:3000')
+MOBILE_URL_ACTIVATION_SUCCESS = env('MOBILE_URL_ACTIVATION_SUCCESS', default='http://localhost:8081')
+
 # Application definition
 
 INSTALLED_APPS = [

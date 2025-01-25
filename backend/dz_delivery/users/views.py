@@ -10,6 +10,7 @@ from djoser.views import UserViewSet
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 from .models import Document, DocumentType
 from .permissions import IsActive, IsAdminOrReviewer
@@ -216,7 +217,6 @@ class UserViewSet(UserViewSet):
                     {"error": "Missing UID or token."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
-            
             try:
                 # Decode the UID and get the user
                 user_id = urlsafe_base64_decode(uid).decode()
@@ -234,9 +234,9 @@ class UserViewSet(UserViewSet):
                     user.save()
                     redirect_id = request.query_params.get('redirect_id')
                     if redirect_id == 'web':
-                        return redirect("https://yourwebapp.com/activation-success/")
+                        return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
                     elif redirect_id == "mobile":
-                        return redirect("yourapp://activation-success/")
+                        return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
                     else:
                         return Response(
                         {"message": "Account successfully activated."},
@@ -258,7 +258,7 @@ class UserViewSet(UserViewSet):
         if response.status_code == 204:
             redirect_id = request.query_params.get('redirect_id')
             if redirect_id == 'web':
-                return redirect("https://yourwebapp.com/activation-success/")
+                return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
             elif redirect_id == "mobile":
-                return redirect("yourapp://activation-success/")
+                return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
         return response
