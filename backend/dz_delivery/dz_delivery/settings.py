@@ -164,7 +164,7 @@ AUTHENTICATION_BACKENDS = [
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
-    'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
+    'ACTIVATION_URL': 'auth/users/activation/?uid={uid}&token={token}',
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'auth/users/reset-username/{uid}/{token}',
     'SERIALIZERS': {
