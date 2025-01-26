@@ -8,6 +8,6 @@ class CustomActivationEmail(ActivationEmail):
         query_params = self.request.query_params
         redirect_id = query_params.get('redirect_id')
         if redirect_id:
-            context['url'] += f'?redirect_id={redirect_id}'
+            context['url'] += f'&redirect_id={redirect_id}'
 
         return context

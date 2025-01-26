@@ -35,6 +35,9 @@ DEBUG = env.bool('DEBUG', default=True)
 
 ALLOWED_HOSTS = ['http://localhost:5173']#env.list('ALLOWED_HOSTS', default=['localhost'])
 
+FRONTEND_URL_ACTIVATION_SUCCESS = env('FRONTEND_URL_ACTIVATION_SUCCESS', default='http://localhost:3000')
+MOBILE_URL_ACTIVATION_SUCCESS = env('MOBILE_URL_ACTIVATION_SUCCESS', default='http://localhost:8081')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'dz_delivery.urls'
@@ -145,13 +149,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-ALLOWED_HOSTS = ['*']
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8081',
-    'http://localhost:5173'
-]
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8081', 'http://localhost:5173']
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -170,7 +168,7 @@ AUTHENTICATION_BACKENDS = [
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
-    'ACTIVATION_URL': 'auth/users/activation/{uid}/{token}',
+    'ACTIVATION_URL': 'auth/users/activation/?uid={uid}&token={token}',
     'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
     'USERNAME_RESET_CONFIRM_URL': 'auth/users/reset-username/{uid}/{token}',
     'SERIALIZERS': {
@@ -214,3 +212,7 @@ SERVER_EMAIL = env('SERVER_EMAIL', default='admin@yourdomain.com')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

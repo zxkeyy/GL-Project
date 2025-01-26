@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from rest_framework import viewsets, status, serializers
 from rest_framework.response import Response
@@ -7,11 +8,17 @@ from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import redirect
 from djoser.views import UserViewSet
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import default_token_generator
+from django.conf import settings
 
 from .models import Document, DocumentType
 from .permissions import IsActive, IsAdminOrReviewer
 from .serializers import DocumentReviewSerializer, DocumentSerializer, DocumentTypeSerializer, PhoneSerializer, PhoneVerificationSerializer
 from .services import create_phone_verification_and_send_code
+
+User = get_user_model()
 
 # Phone number verification views
 class PhoneVerificationView(viewsets.GenericViewSet):
@@ -199,13 +206,62 @@ class DocumentViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(UserViewSet):
-    @action(["post"], detail=False)
+    @action(["get", "post"], detail=False)
     def activation(self, request, *args, **kwargs):
+        # Handle GET requests (link activation)
+        if request.method == "GET":
+            uid = request.query_params.get("uid")
+            token = request.query_params.get("token")
+            
+            if not uid or not token:
+                return Response(
+                    {"error": "Missing UID or token."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            try:
+                # Decode the UID and get the user
+                user_id = urlsafe_base64_decode(uid).decode()
+                user = User.objects.get(pk=user_id)
+            except (User.DoesNotExist, ValueError, TypeError, OverflowError):
+                return Response(
+                    {"error": "Invalid activation link."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Validate the token and activate the user
+            if default_token_generator.check_token(user, token):
+                if not user.is_active:
+                    user.is_active = True
+                    user.save()
+                    redirect_id = request.query_params.get('redirect_id')
+                    if redirect_id == 'web':
+                        return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
+                    elif redirect_id == "mobile":
+                        print("Redirecting to mobile deep link: yourapp://activation-success/")
+                        return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
+                    else:
+                        return Response(
+                        {"message": "Account successfully activated."},
+                        status=status.HTTP_200_OK
+                    )
+                else:
+                    return Response(
+                        {"error": "Account is already active."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:
+                return Response(
+                    {"error": "Invalid or expired token."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # Handle POST requests (default Djoser behavior)
         response = super().activation(request, *args, **kwargs)
         if response.status_code == 204:
             redirect_id = request.query_params.get('redirect_id')
             if redirect_id == 'web':
-                return redirect("https://yourwebapp.com/activation-success/")
+                return redirect(settings.FRONTEND_URL_ACTIVATION_SUCCESS)
             elif redirect_id == "mobile":
-                return redirect("yourapp://activation-success/")
+                print("Redirecting to mobile deep link: yourapp://activation-success/")
+                return redirect(settings.MOBILE_URL_ACTIVATION_SUCCESS)
         return response
