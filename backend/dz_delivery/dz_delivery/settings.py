@@ -33,7 +33,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])
+ALLOWED_HOSTS = ['http://localhost:5173']#env.list('ALLOWED_HOSTS', default=['localhost'])
 
 FRONTEND_URL_ACTIVATION_SUCCESS = env('FRONTEND_URL_ACTIVATION_SUCCESS', default='http://localhost:3000')
 MOBILE_URL_ACTIVATION_SUCCESS = env('MOBILE_URL_ACTIVATION_SUCCESS', default='http://localhost:8081')
@@ -148,14 +148,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-]
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

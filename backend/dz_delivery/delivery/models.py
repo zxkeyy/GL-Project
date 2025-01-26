@@ -77,10 +77,10 @@ class Driver(TimeStampedModel):
         _("Rating"),
         default=5.0,
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]
-    )
-    total_deliveries = models.PositiveIntegerField(_("Total Deliveries"), default=0)
-    successful_deliveries = models.PositiveIntegerField(_("Successful Deliveries"), default=0)
-    available = models.BooleanField(_("Available"), default=False)
+    ) # why default 5 and why between 1-5 not 0-5
+    total_deliveries = models.PositiveIntegerField(_("Total Deliveries"), default=0) # don't know if calculating it each time is better or not
+    successful_deliveries = models.PositiveIntegerField(_("Successful Deliveries"), default=0) # didn't understand why this
+    available = models.BooleanField(_("Available"), default=False) 
     last_active = models.DateTimeField(_("Last Active"), null=True, blank=True)
     bank_account_info = models.JSONField(_("Bank Account Info"), null=True, blank=True)
 
@@ -122,10 +122,11 @@ class Package(TimeStampedModel):
         ('CANCELLED', _('Cancelled')),
     ]
 
+    # changed priorities
     PRIORITY_CHOICES = [
+        ('ECONOMIC', _('Economic')),
         ('STANDARD', _('Standard')),
         ('EXPRESS', _('Express')),
-        ('SAME_DAY', _('Same Day')),
     ]
 
     tracking_number = models.UUIDField(
@@ -182,7 +183,7 @@ class Package(TimeStampedModel):
         null=True,
         blank=True,
         validators=[MinValueValidator(1), MaxValueValidator(5)]
-    )
+    ) # why customer rating in package
     customer_feedback = models.TextField(_("Customer Feedback"), blank=True)
 
     class Meta:

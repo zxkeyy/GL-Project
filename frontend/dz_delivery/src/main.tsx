@@ -7,14 +7,16 @@ import "./i18n.js";
 import "./index.css";
 import theme from "./theme";
 import router from "./routes.jsx";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Suspense fallback={<div>Loading...</div>}>
-        <RouterProvider router={router} />
-      </Suspense>
-    </ThemeProvider>
-  </StrictMode>
+    <StrictMode>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Suspense fallback={<div>Loading...</div>}>
+                <RouterProvider router={router} />
+                <Toaster />
+            </Suspense>
+        </ThemeProvider>
+    </StrictMode>
 );
