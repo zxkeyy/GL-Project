@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main
+      - development
 
 jobs:
   build:
@@ -34,9 +35,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug secrets
-        run: echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}, POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} DB_NAME=${{ vars.DB_NAME }}, DB_HOST=${{ vars.DB_HOST }}"
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -49,11 +47,15 @@ jobs:
 
       - name: Create .env for Django
         run: |
-          echo "DB_NAME=${{ vars.DB_NAME }} " >> backend/.env
-          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> backend/.env
-          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/.env
-          echo "DB_HOST=localhost" >> backend/.env
-          echo "DB_PORT=5432" >> backend/.env
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> backend/dz_delivery/.env
+          echo "DB_USER=${{ secrets.POSTGRES_USER }}" >> backend/dz_delivery/.env
+          echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend/dz_delivery/.env
+          echo "DB_HOST=${{ vars.DB_HOST }}" >> backend/dz_delivery/.env
+          echo "DB_PORT=${{ vars.DB_PORT }}" >> backend/dz_delivery/.env
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> backend/dz_delivery/.env
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> backend/dz_delivery/.env
+          echo "ALLOWED_HOSTS=${{ vars.ALLOWED_HOSTS }}" >> backend/dz_delivery/.env
+          echo "DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}" >> backend/dz_delivery/.env
       - name: Run Migrations
         run: |
           cd backend/dz_delivery
@@ -77,6 +79,15 @@ jobs:
         run: |
           docker build -t dz_frontend ./frontend/dz_delivery
 
+      - name: Install dependencies for mobile
+        run: |
+          cd mobile/dz_delivery
+          npm install
+
+      - name: Build Mobile Docker Image
+        run: |
+          docker build -t dz_mobile ./mobile/dz_delivery
+
       - name: Run Backend Tests
         run: |
           cd backend/dz_delivery
@@ -85,4 +96,9 @@ jobs:
       - name: Run Frontend Tests
         run: |
           cd frontend/dz_delivery
+          npm test
+
+      - name: Run Mobile Tests
+        run: |
+          cd mobile/dz_delivery
           npm test

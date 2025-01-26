@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import environ
 import os
@@ -27,13 +28,15 @@ environ.Env.read_env(env_file=".env")
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ijyt7+n*6%wy1=lbfy-#zju5m($%ovo1+z_$um6dzip!93bi!p'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', default=True)
 
-ALLOWED_HOSTS = [] # env.list('ALLOWED_HOSTS', default=['localhost'])
+ALLOWED_HOSTS = ['http://localhost:5173']#env.list('ALLOWED_HOSTS', default=['localhost'])
 
+FRONTEND_URL_ACTIVATION_SUCCESS = env('FRONTEND_URL_ACTIVATION_SUCCESS', default='http://localhost:3000')
+MOBILE_URL_ACTIVATION_SUCCESS = env('MOBILE_URL_ACTIVATION_SUCCESS', default='http://localhost:8081')
 
 # Application definition
 
@@ -44,16 +47,27 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    'djoser',
+    'django_filters',
+    #
+    'users',
+    'delivery',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'dz_delivery.urls'
@@ -86,7 +100,7 @@ DATABASES = {
         'NAME': env('DB_NAME', default='dz_delivery'),
         'USER': env('DB_USER', default='myuser'),
         'PASSWORD': env('DB_PASSWORD', default='password'),
-        'HOST': env('DB_HOST', default='localhost'),
+        'HOST': env('DB_HOST', default='db'),
         'PORT': env('DB_PORT', default='5432'),
     }
 }
@@ -134,12 +148,71 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'users.authentication.JWTInactiveUserAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'ACTIVATION_URL': 'auth/users/activation/?uid={uid}&token={token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'auth/users/reset-password/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': 'auth/users/reset-username/{uid}/{token}',
+    'SERIALIZERS': {
+        'user_create': 'users.serializers.UserCreateSerializer',
+        'user': 'users.serializers.UserSerializer',
+        'current_user': 'users.serializers.UserSerializer',
+    },
+    'EMAIL': {
+        'activation': 'users.email.CustomActivationEmail',
+    },
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # Token expiration
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=100),
+    'ROTATE_REFRESH_TOKENS': True,  # Generate new refresh token on each use
+    'BLACKLIST_AFTER_ROTATION': True,  # Prevent reuse of refresh tokens
+    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.TokenObtainPairSerializer',
+    'USER_AUTHENTICATION_RULE': 'users.authentication.inactive_user_authentication_rule',
+}
+
+PHONE_VERIFICATION = {
+    'MESSAGE':("Welcome to Blitz, Your verification code is: {code}"),
+    'TOKEN_LENGTH': 6,
+    'CODE_EXPIRATION_TIME': 300,
+}
+
+AUTH_USER_MODEL = 'users.User'
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_PORT = 587
+EMAIL_HOST_USER= env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@yourdomain.com')
+SERVER_EMAIL = env('SERVER_EMAIL', default='admin@yourdomain.com')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
