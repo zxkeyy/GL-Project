@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Typography, Grid, Paper, Box, Button } from "@mui/material";
 import { LocalShipping, History, Add } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { BarChart, LineChart } from "../../components/charts"; // Update import path
+import axios from "axios";
 
 const DashboardItem: React.FC<{
     icon: React.ReactNode;
@@ -46,6 +47,43 @@ const DashboardItem: React.FC<{
 );
 
 const ClientDashboard: React.FC = () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const [packages, setPackages] = React.useState([]);
+
+    useEffect(() => {
+        const getPackages = async () => {
+            try {
+                axios.interceptors.request.use(
+                    (config) => {
+                        const storedState =
+                            localStorage.getItem("auth-storage");
+                        const accessToken = storedState
+                            ? JSON.parse(storedState).state.accessToken
+                            : null;
+                        console.log(accessToken);
+                        if (accessToken) {
+                            config.headers.Authorization = `JWT ${accessToken}`;
+                        }
+                        return config;
+                    },
+                    (error) => {
+                        return Promise.reject(error);
+                    }
+                );
+                const response = await axios.get(
+                    `${backendUrl}/delivery/packages/my_packages`,
+
+                    {
+                        withCredentials: true,
+                    }
+                );
+                setPackages(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getPackages();
+    }, []);
     return (
         <Box>
             <Typography variant="h4" sx={{ mb: 4, fontWeight: 700 }}>
@@ -78,7 +116,7 @@ const ClientDashboard: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <Paper sx={{ p: 2 }}>
-                        <BarChart />
+                        <BarChart packages={packages} />
                     </Paper>
                 </Grid>
                 <Grid item xs={12} md={6}>

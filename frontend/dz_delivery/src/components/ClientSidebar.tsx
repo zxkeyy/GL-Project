@@ -12,9 +12,54 @@ import {
     Avatar,
 } from "@mui/material";
 import { Dashboard, LocalShipping, History, Add } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const ClientSidebar: React.FC = () => {
     const location = useLocation();
+
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    interface Package {
+        sender: {
+            full_name: string;
+        };
+        // add other package properties as needed
+    }
+    const [sender, setSender] = useState<Package["sender"] | null>(null);
+
+    useEffect(() => {
+        const getPackages = async () => {
+            try {
+                axios.interceptors.request.use(
+                    (config) => {
+                        const storedState =
+                            localStorage.getItem("auth-storage");
+                        const accessToken = storedState
+                            ? JSON.parse(storedState).state.accessToken
+                            : null;
+                        if (accessToken) {
+                            config.headers.Authorization = `JWT ${accessToken}`;
+                        }
+                        return config;
+                    },
+                    (error) => {
+                        return Promise.reject(error);
+                    }
+                );
+                const response = await axios.get(
+                    `${backendUrl}/auth/users/me`,
+                    {
+                        withCredentials: true,
+                    }
+                );
+                setSender(response.data);
+                console.log("response.data: ", response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getPackages();
+    }, []);
 
     const menuItems = [
         { text: "Dashboard", icon: <Dashboard />, path: "/client" },
@@ -65,7 +110,7 @@ const ClientSidebar: React.FC = () => {
                     color="primary"
                     sx={{ fontWeight: 700 }}
                 >
-                    John Doe
+                    {sender?.full_name || "Not logged In"}
                 </Typography>
             </Box>
             <List>

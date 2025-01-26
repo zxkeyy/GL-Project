@@ -55,10 +55,12 @@ const TrackDelivery: React.FC = () => {
                             {steps.map((label, index) => (
                                 <Step key={label}>
                                     <StepLabel
-                                        StepIconComponent={
-                                            index === currentStep
-                                                ? LocalShipping
-                                                : CheckCircleOutline
+                                        icon={
+                                            index === currentStep ? (
+                                                <LocalShipping />
+                                            ) : (
+                                                <CheckCircleOutline />
+                                            )
                                         }
                                     >
                                         {label}

@@ -30,7 +30,7 @@ const Login: React.FC = () => {
                 toast.success("Login successful");
                 navigate("/client");
             } else {
-                toast.error(response.error);
+                toast.error(response.error ?? "An error occurred");
             }
         } catch (error) {
             console.error(error);

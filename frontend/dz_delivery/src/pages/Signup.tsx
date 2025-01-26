@@ -32,7 +32,14 @@ const Signup: React.FC = () => {
                 });
                 navigate("/client");
             } else {
-                toast.error(response.error.message);
+                toast.error(
+                    typeof response.error === "object" &&
+                        response.error !== null &&
+                        "message" in response.error
+                        ? (response.error as { message?: string }).message ||
+                              "An error occurred"
+                        : "An error occurred"
+                );
             }
         } catch (error) {
             console.error(error);

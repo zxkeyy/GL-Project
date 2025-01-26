@@ -13,6 +13,11 @@ import UserManagement from "./pages/admin/UserManagement";
 import DeliveryManagement from "./pages/admin/DeliveryManagement";
 import SystemOverview from "./pages/admin/SystemOverview";
 import NotFound from "./pages/NotFound";
+import TrackDeliveries from "./pages/client/TrackDeliveries";
+import Services from "./pages/Services";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
+import DriverApplication from "./pages/DriverApplication";
 
 const router = createBrowserRouter([
     {
@@ -22,12 +27,17 @@ const router = createBrowserRouter([
         children: [
             { path: "login", element: <Login /> },
             { path: "signup", element: <Signup /> },
+            { path: "about", element: <About /> },
+            { path: "services", element: <Services /> },
+            { path: "contact", element: <Contact /> },
+            { path: "driver-application", element: <DriverApplication /> },
             {
                 path: "client",
                 element: <ClientLayout />,
                 children: [
                     { path: "", element: <ClientDashboard /> },
                     { path: "create-delivery", element: <CreateDelivery /> },
+                    { path: "track-delivery", element: <TrackDeliveries /> },
                     { path: "track-delivery/:id", element: <TrackDelivery /> },
                     { path: "delivery-history", element: <DeliveryHistory /> },
                 ],
