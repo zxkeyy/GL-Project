@@ -1,4 +1,5 @@
-import { Box, Container, Grid, Typography, Link } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 function Footer() {
     return (
@@ -21,16 +22,16 @@ function Footer() {
                         <Typography variant="h6" gutterBottom>
                             Quick Links
                         </Typography>
-                        <Link href="#" color="inherit" display="block">
+                        <Link to="/" color="inherit">
                             Home
                         </Link>
-                        <Link href="#" color="inherit" display="block">
+                        <Link to="/services" color="inherit">
                             Services
                         </Link>
-                        <Link href="#" color="inherit" display="block">
-                            Track Package
+                        <Link to="/contact" color="inherit">
+                            Contact
                         </Link>
-                        <Link href="#" color="inherit" display="block">
+                        <Link to="/driver-application" color="inherit">
                             Become a Driver
                         </Link>
                     </Grid>
@@ -53,16 +54,16 @@ function Footer() {
                             Follow Us
                         </Typography>
                         <Box sx={{ display: "flex", gap: 2 }}>
-                            <Link href="#" color="inherit">
+                            <Link to="/" color="inherit">
                                 Facebook
                             </Link>
-                            <Link href="#" color="inherit">
+                            <Link to="/" color="inherit">
                                 Twitter
                             </Link>
-                            <Link href="#" color="inherit">
+                            <Link to="/" color="inherit">
                                 Instagram
                             </Link>
-                            <Link href="#" color="inherit">
+                            <Link to="/" color="inherit">
                                 LinkedIn
                             </Link>
                         </Box>
@@ -74,8 +75,7 @@ function Footer() {
                     align="center"
                     sx={{ mt: 4 }}
                 >
-                    © {new Date().getFullYear()} Blitz Delivery. All rights
-                    reserved.
+                    © 2025 Blitz Delivery. All rights reserved.
                 </Typography>
             </Container>
         </Box>

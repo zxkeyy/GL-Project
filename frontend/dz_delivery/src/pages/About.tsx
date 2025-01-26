@@ -1,12 +1,6 @@
 import type React from "react";
-import {
-    Typography,
-    Box,
-    Grid,
-    Card,
-    CardContent,
-    Avatar,
-} from "@mui/material";
+import { Typography, Box, Grid, Card, CardContent } from "@mui/material";
+import logo from "/logo-black.svg";
 
 const About: React.FC = () => {
     return (
@@ -26,7 +20,7 @@ const About: React.FC = () => {
                     gutterBottom
                     sx={{ mb: 4, color: "text.secondary" }}
                 >
-                    Revolutionizing the delivery industry since 2010
+                    Revolutionizing the delivery industry
                 </Typography>
             </Box>
 
@@ -55,10 +49,10 @@ const About: React.FC = () => {
                         customer-centric delivery services.
                     </Typography>
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid item className="justify-center">
                     <Box
                         component="img"
-                        src="/placeholder.svg?height=300&width=500"
+                        src={logo}
                         alt="Blitz Delivery Team"
                         sx={{ width: "100%", height: "auto", borderRadius: 2 }}
                     />
@@ -82,18 +76,28 @@ const About: React.FC = () => {
                 <Grid container spacing={4}>
                     {[
                         {
-                            name: "John Doe",
-                            role: "CEO & Founder",
+                            name: "Elaziz Dhia eddine",
+                            role: "Team Leader",
                             image: "/placeholder.svg?height=200&width=200",
                         },
                         {
-                            name: "Jane Smith",
-                            role: "COO",
+                            name: "Selmani Zakaria",
+                            role: "Backend, Mobile Developer",
                             image: "/placeholder.svg?height=200&width=200",
                         },
                         {
-                            name: "Mike Johnson",
-                            role: "CTO",
+                            name: "Bouchenafa Mouna",
+                            role: "Backend Developer",
+                            image: "/placeholder.svg?height=200&width=200",
+                        },
+                        {
+                            name: "Zaoudi Hadil",
+                            role: "UI/UX Designer",
+                            image: "/placeholder.svg?height=200&width=200",
+                        },
+                        {
+                            name: "Hamidi Amira",
+                            role: "Frontend Developer",
                             image: "/placeholder.svg?height=200&width=200",
                         },
                     ].map((member, index) => (
@@ -107,11 +111,6 @@ const About: React.FC = () => {
                                     p: 2,
                                 }}
                             >
-                                <Avatar
-                                    src={member.image}
-                                    alt={member.name}
-                                    sx={{ width: 120, height: 120, mb: 2 }}
-                                />
                                 <CardContent>
                                     <Typography
                                         gutterBottom
