@@ -56,6 +56,25 @@ class PackageSerializer(serializers.ModelSerializer):
                 'delivery_progress', 'created_at']
         read_only_fields = ['status', 'current_address', 'cost', 'insurance_amount', 'tracking_number', 'verification_code', 
                            'created_at']
+        
+    def create(self, validated_data):
+        pickup_address_data = validated_data.pop('pickup_address')
+        delivery_address_data = validated_data.pop('delivery_address')
+        sender = self.context['request'].user
+        
+        # Create address instances first
+        pickup_address = Address.objects.create(**pickup_address_data)
+        delivery_address = Address.objects.create(**delivery_address_data)
+        
+        # Create package instance with addresses
+        package = Package.objects.create(
+
+            pickup_address=pickup_address,
+            delivery_address=delivery_address,
+            **validated_data
+        )
+        
+        return package
 
     def validate_dimensions(self, value):
         required_keys = {'length', 'width', 'height'}
